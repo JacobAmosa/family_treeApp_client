@@ -6,9 +6,9 @@ import com.google.android.gms.maps.GoogleMap;
 import java.util.ArrayList;
 
 public class MySettings {
-    private int storyHue = Color.BLUE;
-    private int familyHue = Color.GREEN;
-    private int spouseHue = Color.MAGENTA;
+    private int storyHue = Color.RED;
+    private int familyHue = Color.BLUE;
+    private int spouseHue = Color.GREEN;
     private int mapType = GoogleMap.MAP_TYPE_NORMAL;
     private boolean lineForStory = true;
     private boolean lineForFamily = true;

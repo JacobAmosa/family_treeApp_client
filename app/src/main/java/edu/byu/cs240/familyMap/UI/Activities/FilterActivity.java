@@ -15,62 +15,48 @@ import edu.byu.cs240.familyMap.Data.DataCache;
 import edu.byu.cs240.familyMap.R;
 import edu.byu.cs240.familyMap.UI.Lists.FilterRecycleAdapter;
 
-/** FilterActivity
- * Contains all information for the Filter Activity, and uses a recycler view and a filter Adapter
- */
 public class FilterActivity extends AppCompatActivity {
 
-    private RecyclerView mFilterRecycler;
-    private FilterRecycleAdapter mFilterAdapter;
+    private RecyclerView recyclerView;
+    private final DataCache dataCache = DataCache.getInstance();
 
-    private DataCache dataCache = DataCache.getInstance();
-
-    //________________________ onCreate and other Activity functions ____________________________________
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter);
         if (getSupportActionBar() != null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        mFilterRecycler = findViewById(R.id.filter_recycler);
-        mFilterRecycler.setLayoutManager(new LinearLayoutManager(this));
-
-        updateUI();
+        recyclerView = findViewById(R.id.filter_recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        refactor();
     }
 
-    //--****************-- Initializing the Filter Adapter --***************--
-    private void updateUI()
-    {
-        List<String> defaultFilter = new ArrayList<>();
-        defaultFilter.add("Father's Side");
-        defaultFilter.add("Mother's Side");
-        defaultFilter.add("Male Events");
-        defaultFilter.add("Female Events");
-
-        List<String> eventTypes = dataCache.getTypes();
-        defaultFilter.addAll(eventTypes);
-        mFilterAdapter = new FilterRecycleAdapter(defaultFilter, this);
-        mFilterRecycler.setAdapter(mFilterAdapter);
-    }
-
-    //--****************-- Overriding the up Button and creating the Options Menu --***************--
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    private void refactor() {
+        List<String> filter = new ArrayList<>();
+        List<String> types = dataCache.getTypes();
+        filter.addAll(types);
+        filter.add("Event males");
+        filter.add("Events females");
+        filter.add("Paternal");
+        filter.add("Maternal");
+        FilterRecycleAdapter recycler = new FilterRecycleAdapter(filter, this);
+        recyclerView.setAdapter(recycler);
     }
 
     public boolean onCreateOptionsMenu(Menu menu)
     {
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menu) {
+        switch (menu.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(menu);
     }
 
 }

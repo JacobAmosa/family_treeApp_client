@@ -11,45 +11,35 @@ import androidx.fragment.app.FragmentTransaction;
 
 import edu.byu.cs240.familyMap.R;
 
-/** EventActivity
- * Contains all functions with the Event Activity, and uses the Map Fragment to display
- */
 public class EventActivity extends AppCompatActivity {
 
-    //________________________ onCreate and other Activity functions ____________________________________
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
         if (getSupportActionBar() != null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        String arguments = getIntent().getExtras().getString("Event");
-
+        String args = getIntent().getExtras().getString("Event");
         FragmentManager fm = getSupportFragmentManager();
-        Fragment mapFragment = new MapFragment(arguments);
-        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        Fragment mapFragment = new MapFragment(args);
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.add(R.id.map_fragment, mapFragment);
+        ft.addToBackStack(null);
 
-        fragmentTransaction.add(R.id.map_fragment, mapFragment);
-        fragmentTransaction.addToBackStack(null);
-
-        fragmentTransaction.commit();
+        ft.commit();
 
     }
 
-    //--****************-- Overriding the up Button --***************--
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId()) {
+    public boolean onOptionsItemSelected(MenuItem menu) {
+        switch (menu.getItemId()) {
             case android.R.id.home:
                 Intent intent = new Intent(this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 return true;
         }
-
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(menu);
     }
 }
