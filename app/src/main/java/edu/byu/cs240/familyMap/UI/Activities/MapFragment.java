@@ -311,7 +311,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         EventModel currEvent = mMarkerMap.get(selectedMarker);
         PersonModel currPerson = dataCache.getMyPeople().get(currEvent.getPersonID());
         List<EventModel> eventsList = dataCache.getAllMyEvents().get(currPerson.getId());
-        eventsList = dataCache.sortEventsByYear(eventsList);
+        eventsList = dataCache.eventChronOrder(eventsList);
 
         if (!dataCache.getMyFilter().doesContainEvent(currEvent.getEventType())) {
             return;
@@ -363,7 +363,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         EventModel currEvent = mMarkerMap.get(selectedMarker);
         PersonModel currPerson = dataCache.getMyPeople().get(currEvent.getPersonID());
         List<EventModel> eventsList = dataCache.getAllMyEvents().get(currPerson.getSpouseID());
-        eventsList = dataCache.sortEventsByYear(eventsList);
+        eventsList = dataCache.eventChronOrder(eventsList);
         MyFilter filter = dataCache.getMyFilter();
 
         if (filter.doesContainEvent(currEvent.getEventType())) {
@@ -407,7 +407,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void familyLineHelperFather(PersonModel currPerson, EventModel focusedEvent, int generation)
     {
         List<EventModel> eventsList = dataCache.getAllMyEvents().get(currPerson.getFatherID());
-        eventsList = dataCache.sortEventsByYear(eventsList);
+        eventsList = dataCache.eventChronOrder(eventsList);
 
         for (int i = 0; i < eventsList.size(); i++) {
             if (currentDisplayedEvents.containsValue(eventsList.get(i))) {
@@ -432,7 +432,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void familyLineHelperMother(PersonModel currPerson, EventModel focusedEvent, int generation)
     {
         List<EventModel> eventsList = dataCache.getAllMyEvents().get(currPerson.getMotherID());
-        eventsList = dataCache.sortEventsByYear(eventsList);
+        eventsList = dataCache.eventChronOrder(eventsList);
 
         for (int i = 0; i < eventsList.size(); i++) {
             if (currentDisplayedEvents.containsValue(eventsList.get(i))) {

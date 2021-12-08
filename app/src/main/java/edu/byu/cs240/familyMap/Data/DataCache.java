@@ -123,39 +123,34 @@ public class DataCache {
         this.clickedEvent = clickedEvent;
     }
 
-    //____________________________________ Data Manipulation Methods _________________________________
-    //--****************-- Is Person Included in the Filter --***************--
-    public boolean isPersonDisplayed(PersonModel currPerson) {
-        if (!myFilter.isBoy() && currPerson.getGender().toLowerCase().equals("m")) {
+    public boolean personShown(PersonModel person) {
+        if ((!myFilter.isPaternal() && dadFam.contains(person.getId())) ||
+                (!myFilter.isGirl() && person.getGender().equalsIgnoreCase("f")) ||
+                (!myFilter.isBoy() && person.getGender().equalsIgnoreCase("m"))) {
             return false;
-        } else if (!myFilter.isGirl() && currPerson.getGender().toLowerCase().equals("f")) {
-            return false;
-        } else if (!myFilter.isPaternal() && dadFam.contains(currPerson.getId())) {
-            return false;
-        } else return myFilter.isMaternal() || !momFam.contains(currPerson.getId());
+        } else{
+            return myFilter.isMaternal() || !momFam.contains(person.getId());
+        }
     }
 
-    //--****************-- Sort Events By Year --***************--
-    public List<EventModel> sortEventsByYear(List<EventModel> eventsArrayList) {
-        List<EventModel> sortedEventsList = new ArrayList<>();
-        List<EventModel> currArrayList = new ArrayList<>(eventsArrayList);
-
-        while (currArrayList.size() > 0) {
-            EventModel currEvent = currArrayList.get(0);
-            int index = 0;
-            for (int i = 0; i < currArrayList.size(); i++) {
-                if (currArrayList.get(i).getYear() < currEvent.getYear()) {
-                    currEvent = currArrayList.get(i);
-                    index = i;
+    public List<EventModel> eventChronOrder(List<EventModel> events) {
+        List<EventModel> sorted = new ArrayList<>();
+        List<EventModel> current = new ArrayList<>(events);
+        while (current.size() > 0) {
+            int num = 0;
+            EventModel myEvent = current.get(0);
+            for (int i = 0; i < current.size(); i++) {
+                if (current.get(i).getYear() < myEvent.getYear()) {
+                    num = i;
+                    myEvent = current.get(i);
                 }
             }
-            sortedEventsList.add(currEvent);
-            currArrayList.remove(index);
+            sorted.add(myEvent);
+            current.remove(num);
         }
-        return sortedEventsList;
+        return sorted;
     }
 
-    //--****************-- Find all Relatives of a Person --***************--
     public List<PersonModel> findRelatives(String personID) {
         PersonModel currPerson = getMyPeople().get(personID);
         List<PersonModel> personList = new ArrayList<>();
@@ -176,13 +171,12 @@ public class DataCache {
         return personList;
     }
 
-    //--****************-- Get all Events that are Displayed --***************--
     public Map<String, EventModel> getCurrentEvents() {
         Map<String, EventModel> currentEvents = new HashMap<>();
 
         for (EventModel currEvent : myEvents.values()) {
             PersonModel eventPerson = getMyPeople().get(currEvent.getPersonID());
-            if (!isPersonDisplayed(eventPerson)) {
+            if (!personShown(eventPerson)) {
             } else if (!myFilter.doesContainEvent(currEvent.getEventType())) {
             } else {
                 currentEvents.put(currEvent.getEventID(), currEvent);
@@ -191,7 +185,6 @@ public class DataCache {
         return currentEvents;
     }
 
-    //____________________________________ Initialize rest of Data _________________________________
     public void initializeAllData() {
         initializeEventTypes();
         initializePaternalTree();
@@ -206,7 +199,6 @@ public class DataCache {
         }
     }
 
-    //--****************-- Event Types --***************--
     private void initializeEventTypes() {
         ArrayList<EventModel> eventsArray = new ArrayList<>();
         for (EventModel currEvent : myEvents.values()) {
@@ -226,7 +218,6 @@ public class DataCache {
         data.setTypes(types);
     }
 
-    //--****************-- Paternal and Maternal Tree Start --***************--
     private void initializePaternalTree() {
         dadFam = new HashSet<>();
         ancestorHelper(currentUser.getFatherID(), dadFam);
@@ -237,7 +228,6 @@ public class DataCache {
         ancestorHelper(currentUser.getMotherID(), momFam);
     }
 
-    //--****************-- Ancestor Recursive Helper --***************--
     private void ancestorHelper(String currPersonID, Set<String> personSet) {
         if (currPersonID == null) {
             return;
@@ -254,7 +244,6 @@ public class DataCache {
         }
     }
 
-    //--****************-- All Events per Person --***************--
     private void initializeAllPersonEvents() {
         allMyEvents = new HashMap<>();
         for (PersonModel person : myPeople.values()) {
@@ -269,7 +258,6 @@ public class DataCache {
         }
     }
 
-    //--****************-- All Children of each Person --***************--
     private void initializeAllChildren() {
         kids = new HashMap<>();
         for (PersonModel person : myPeople.values()) {

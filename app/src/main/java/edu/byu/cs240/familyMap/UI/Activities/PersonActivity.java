@@ -85,7 +85,7 @@ public class PersonActivity extends AppCompatActivity {
         List<PersonModel> relatives = new ArrayList<>(dataCache.findRelatives(currPerson.getId()));
 
         List<EventModel> eventsArrayList = new ArrayList<>(dataCache.getAllMyEvents().get(currPerson.getId()));
-        eventsArrayList = dataCache.sortEventsByYear(eventsArrayList);
+        eventsArrayList = dataCache.eventChronOrder(eventsArrayList);
 
         List<String> headers = new ArrayList<>();
         headers.add("Events");
@@ -136,7 +136,7 @@ public class PersonActivity extends AppCompatActivity {
         List<PersonModel> filteredPersonsList = new ArrayList<>();
 
         for (PersonModel person: personsList) {
-            if (dataCache.isPersonDisplayed(person)){
+            if (dataCache.personShown(person)){
                 filteredPersonsList.add(person);
             }
         }
