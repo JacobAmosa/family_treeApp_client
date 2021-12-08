@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import edu.byu.cs240.familyMap.R;
 
-public class MainActivity extends AppCompatActivity implements LoginFragment.LoginListener {
+public class MainActivity extends AppCompatActivity implements LoginFragment.LoginFragmentListener {
 
     private FragmentManager fm = getSupportFragmentManager();
 

@@ -20,7 +20,7 @@ import edu.byu.cs240.familyMap.UI.Tasks.RegisterTask;
 
 public class LoginFragment extends Fragment implements LoginTask.LoginContext, RegisterTask.RegisterContext {
 
-    private LoginListener loginListener;
+    private LoginFragmentListener loginFragmentListener;
     private final RegisterRequest regReq = new RegisterRequest();;
     private final LoginRequest logReq = new LoginRequest();
     private Button registerButt;
@@ -59,11 +59,6 @@ public class LoginFragment extends Fragment implements LoginTask.LoginContext, R
         email.addTextChangedListener(watcher);
         setRadioButtons(v);
         setRegisterAndLogin(v);
-
-
-
-
-
         return v;
     }
 
@@ -73,7 +68,7 @@ public class LoginFragment extends Fragment implements LoginTask.LoginContext, R
             @Override
             public void onClick(View v) {
                 regReq.setGender("m");
-                validate();
+                enabler();
             }
         });
 
@@ -82,7 +77,7 @@ public class LoginFragment extends Fragment implements LoginTask.LoginContext, R
             @Override
             public void onClick(View v) {
                 regReq.setGender("f");
-                validate();
+                enabler();
             }
         });
     }
@@ -90,7 +85,7 @@ public class LoginFragment extends Fragment implements LoginTask.LoginContext, R
     public void setRegisterAndLogin(View v){
         loginButt = v.findViewById(R.id.loginButton);
         registerButt = v.findViewById(R.id.registerButton);
-        validate();
+        enabler();
 
         loginButt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,70 +117,49 @@ public class LoginFragment extends Fragment implements LoginTask.LoginContext, R
     @Override
     public void onExecuteComplete(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-        loginListener.loginComplete();
+        loginFragmentListener.loginComplete();
     }
 
-    //--*****************-- Check to see if buttons should be enabled --*******************--
-    private void validate()
-    {
-        if (validateRegisterButton()){
-            registerButt.setEnabled(false);
-        }
-        else {
-            registerButt.setEnabled(true);
-        }
-
-        if (validateLoginButton()){
-            loginButt.setEnabled(false);
-        }
-        else {
-            loginButt.setEnabled(true);
-        }
-
-    }
-
-    private boolean validateRegisterButton()
-    {
-        return TextUtils.isEmpty(host.getText()) ||
+    private void enabler() {
+        if (TextUtils.isEmpty(host.getText()) ||
                 TextUtils.isEmpty(ip.getText()) ||
                 TextUtils.isEmpty(username.getText()) ||
                 TextUtils.isEmpty(password.getText()) ||
                 TextUtils.isEmpty(email.getText()) ||
                 TextUtils.isEmpty(fName.getText()) ||
                 TextUtils.isEmpty(lName.getText()) ||
-                regReq.getGender() == null;
-    }
-
-    private boolean validateLoginButton()
-    {
-        return TextUtils.isEmpty(host.getText()) ||
+                regReq.getGender() == null){
+            registerButt.setEnabled(false);
+        }else {
+            registerButt.setEnabled(true);
+        }
+        if (TextUtils.isEmpty(host.getText()) ||
                 TextUtils.isEmpty(ip.getText()) ||
                 TextUtils.isEmpty(username.getText()) ||
-                TextUtils.isEmpty(password.getText());
+                TextUtils.isEmpty(password.getText())){
+            loginButt.setEnabled(false);
+        }else {
+            loginButt.setEnabled(true);
+        }
     }
 
-    ////////// Public Interface for Tasks ////////////
-    public interface LoginListener {
+    private class Enabler implements TextWatcher {
+        @Override
+        public void afterTextChanged(Editable s) {}
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            enabler();
+        }
+    }
+
+    public interface LoginFragmentListener {
         void loginComplete();
     }
 
-    public void setLoginListener(LoginListener logListen)
-    {
-        loginListener = logListen;
+    public void setLoginListener(LoginFragmentListener listener) {
+        loginFragmentListener = listener;
     }
 
-    ////////////// TextWatcher //////////////
-    private class Enabler implements TextWatcher {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            validate();
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {}
-
-    }
 }
