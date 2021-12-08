@@ -39,38 +39,32 @@ import edu.byu.cs240.familyMap.R;
 import shared.EventModel;
 import shared.PersonModel;
 
-/** MyMapFragment
- * Contains all information regarding the map aspects of the application, and is used for the Event activity
- */
 public class MapFragment extends Fragment implements OnMapReadyCallback {
+    private final DataCache data = DataCache.getInstance();
+    private GoogleMap googleMap;
+    private Marker currentMarker;
+    private List<Polyline> lines;
+    private boolean imAnEvent;
+    private Map<Marker, EventModel> markerToEvent;
+    private Map<String, EventModel> idToEvent;
+    private ImageView icon;
+    private TextView name;
+    private TextView year;
+    private TextView event;
 
-    private GoogleMap mMap;
-    private SupportMapFragment mapFragment;
-    private Map<Marker, EventModel> mMarkerMap;
-    private Map<String, EventModel> currentDisplayedEvents;
-    private Marker selectedMarker;
+    public MapFragment(){}
 
-    private List<Polyline> lineList;
-
-    private TextView mName;
-    private TextView mEvent;
-    private TextView mYear;
-
-    private ImageView mIcon;
-    private boolean isEvent;
-
-    private DataCache dataCache = DataCache.getInstance();
-
-    // ========================== Constructors ========================================
-    public MapFragment()
-    {}
-
-    public MapFragment (String eventId)
+    public MapFragment (String id)
     {
-        isEvent = eventId != null;
+        imAnEvent = id != null;
     }
 
-    ///////////// Text OnClickListener /////////////////////
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(!imAnEvent);
+    }
+
     View.OnClickListener onClickText = new View.OnClickListener() {
         @Override
         public void onClick(View v)
@@ -79,63 +73,49 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     };
 
-    //______________________________________ onCreate and other Fragment functions _________________________________________________
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(!isEvent);
-    }
-
-    //--****************************-- onCreateView --*******************************--
-    @Override
-    public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle)
-    {
+    public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
         super.onCreateView(layoutInflater, viewGroup, bundle);
         View v = layoutInflater.inflate(R.layout.fragment_map, viewGroup, false);
-
-        mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-        mName = v.findViewById(R.id.person_name);
-        mEvent = v.findViewById(R.id.event_details);
-        mYear = v.findViewById(R.id.year);
-        mIcon = v.findViewById(R.id.map_icon);
-
-        lineList = new ArrayList<>();
-
+        setTextViews(v);
         return v;
     }
 
-    //--****************************-- onResume --*******************************--
+    public void setTextViews(View view){
+        year = view.findViewById(R.id.year);
+        icon = view.findViewById(R.id.map_icon);
+        name = view.findViewById(R.id.person_name);
+        event = view.findViewById(R.id.event_details);
+        lines = new ArrayList<>();
+    }
+
     @Override
-    public void onResume()
-    {
+    public void onResume(){
         super.onResume();
-
-        if (mMap != null && mMarkerMap != null){
-            clearMap();
-            EventModel markedEvent = mMarkerMap.get(selectedMarker);
-            putMarkers(mMap);
-
-            if (selectedMarker == null) {
-                if (!mMarkerMap.containsValue(markedEvent)) {
-                    removeLines();
-                }
-            }
-            mMap.setMapType(dataCache.getMySettings().getMapType());
+        if (markerToEvent != null && googleMap != null){
+            markerRetrieval();
         }
-
-        if (selectedMarker != null && mMarkerMap != null) {
+        if (markerToEvent != null && currentMarker != null) {
             drawLines();
         }
     }
 
+    public void markerRetrieval(){
+        clearMap();
+        EventModel myMarks = markerToEvent.get(currentMarker);
+        putMarkers(googleMap);
+        if (currentMarker == null) {
+            if (!markerToEvent.containsValue(myMarks)) {
+                removeLines();
+            }
+        }
+        googleMap.setMapType(data.getMySettings().getMapType());
+    }
 
-    //--****************************-- Options Menu Functions --*******************************--
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menus, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -180,8 +160,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void textClicked()
     {
         Intent intent = new Intent(getActivity(), PersonActivity.class);
-        PersonModel person = dataCache.getMyPeople().get(mMarkerMap.get(selectedMarker).getPersonID());
-        dataCache.setClickedPerson(person);
+        PersonModel person = data.getMyPeople().get(markerToEvent.get(currentMarker).getPersonID());
+        data.setClickedPerson(person);
         startActivity(intent);
     }
 
@@ -195,17 +175,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     //--****************-- Puts/Refreshes the Map Markers --*****************--
     private void putMarkers(GoogleMap googleMap) {
-        selectedMarker = null;
-        mMarkerMap = new HashMap<>();
+        currentMarker = null;
+        markerToEvent = new HashMap<>();
 
-        Map<String, Colors> allMapColors = dataCache.getColors();
-        currentDisplayedEvents = dataCache.getShownEvents();
+        Map<String, Colors> allMapColors = data.getColors();
+        idToEvent = data.getShownEvents();
 
-        mMap = googleMap;
-        mMap.setMapType(DataCache.getInstance().getMySettings().getMapType());
+        this.googleMap = googleMap;
+        this.googleMap.setMapType(DataCache.getInstance().getMySettings().getMapType());
 
         ////////// Map Marker Click Listener ///////////
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+        this.googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker)
             {
@@ -214,30 +194,30 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
 
-        for (EventModel currEvent : currentDisplayedEvents.values()) {
+        for (EventModel currEvent : idToEvent.values()) {
             LatLng currentPosition = new LatLng(currEvent.getLatitude(), currEvent.getLongitude());
             Colors mapColor = allMapColors.get(currEvent.getEventType().toLowerCase());
 
-            Marker marker = mMap.addMarker(new MarkerOptions().position(currentPosition)
+            Marker marker = this.googleMap.addMarker(new MarkerOptions().position(currentPosition)
                     .icon(BitmapDescriptorFactory.defaultMarker(mapColor.getHue()))
                     .title(currEvent.getEventType()));
-            mMarkerMap.put(marker, currEvent);
+            markerToEvent.put(marker, currEvent);
 
-            if (dataCache.getClickedEvent() == currEvent){  // For Event Fragment selection
-                selectedMarker = marker;
+            if (data.getClickedEvent() == currEvent){  // For Event Fragment selection
+                currentMarker = marker;
             }
         }
 
-        if (selectedMarker != null && isEvent){  // Event Fragment camera focus
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(selectedMarker.getPosition()));
-            markerClicked(selectedMarker);
+        if (currentMarker != null && imAnEvent){  // Event Fragment camera focus
+            this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentMarker.getPosition()));
+            markerClicked(currentMarker);
         }
     }
 
     //--****************-- Clears All Markers from Map --*****************--
     private void clearMap()
     {
-        for (Marker currMarker:mMarkerMap.keySet()) {
+        for (Marker currMarker: markerToEvent.keySet()) {
             currMarker.remove();
         }
     }
@@ -245,35 +225,35 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     //--****************************-- markerClicked --*******************************--
     private void markerClicked(Marker marker)
     {
-        EventModel currEvent = mMarkerMap.get(marker);
-        PersonModel currPerson = dataCache.getMyPeople().get(currEvent.getPersonID());
+        EventModel currEvent = markerToEvent.get(marker);
+        PersonModel currPerson = data.getMyPeople().get(currEvent.getPersonID());
         String newName = currPerson.getFirstName() + " " + currPerson.getLastName();
         String eventInfo = currEvent.getEventType() + ": " + currEvent.getCity() + ", " + currEvent.getCountry();
         String yearInfo = "(" + currEvent.getYear() + ")";
 
-        mName.setText(newName);
-        mName.setVisibility(View.VISIBLE);
-        mName.setOnClickListener(onClickText);
+        name.setText(newName);
+        name.setVisibility(View.VISIBLE);
+        name.setOnClickListener(onClickText);
 
-        mEvent.setText(eventInfo);
-        mEvent.setVisibility(View.VISIBLE);
-        mEvent.setOnClickListener(onClickText);
+        event.setText(eventInfo);
+        event.setVisibility(View.VISIBLE);
+        event.setOnClickListener(onClickText);
 
-        mYear.setText(yearInfo);
-        mYear.setVisibility(View.VISIBLE);
-        mYear.setOnClickListener(onClickText);
+        year.setText(yearInfo);
+        year.setVisibility(View.VISIBLE);
+        year.setOnClickListener(onClickText);
 
         if (currPerson.getGender().toLowerCase().equals("m")){
-            mIcon.setImageDrawable(getResources().getDrawable(R.drawable.boy_logo));
+            icon.setImageDrawable(getResources().getDrawable(R.drawable.boy_logo));
         }
         else {
-            mIcon.setImageDrawable(getResources().getDrawable(R.drawable.girl_logo));
+            icon.setImageDrawable(getResources().getDrawable(R.drawable.girl_logo));
         }
-        mIcon.setVisibility(View.VISIBLE);
-        mIcon.setOnClickListener(onClickText);
+        icon.setVisibility(View.VISIBLE);
+        icon.setOnClickListener(onClickText);
 
-        selectedMarker = marker;
-        dataCache.setClickedEvent(currEvent);
+        currentMarker = marker;
+        data.setClickedEvent(currEvent);
         drawLines();
     }
 
@@ -299,16 +279,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     //--****************-- Removes all Lines --*****************--
     private void removeLines()
     {
-        for (com.google.android.gms.maps.model.Polyline currLine : lineList) {
+        for (com.google.android.gms.maps.model.Polyline currLine : lines) {
             currLine.remove();
         }
-        lineList = new ArrayList<Polyline>();
+        lines = new ArrayList<Polyline>();
     }
 
     //--****************-- Start Drawing Story Lines --*****************--
     private void drawStoryLines() {
         DataCache dataCache = DataCache.getInstance();
-        EventModel currEvent = mMarkerMap.get(selectedMarker);
+        EventModel currEvent = markerToEvent.get(currentMarker);
         PersonModel currPerson = dataCache.getMyPeople().get(currEvent.getPersonID());
         List<EventModel> eventsList = dataCache.getAllMyEvents().get(currPerson.getId());
         eventsList = dataCache.eventChronOrder(eventsList);
@@ -325,7 +305,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     {
         int i = 0;
         while (i < eventsList.size() - 1) {
-            if (dataCache.getShownEvents().containsValue(eventsList.get(i))) {
+            if (data.getShownEvents().containsValue(eventsList.get(i))) {
                 EventModel event = eventsList.get(i);
                 i++;
 
@@ -342,14 +322,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     {
         while (i < eventsList.size()) {
 
-            if (dataCache.getShownEvents().containsValue(eventsList.get(i))) {
+            if (data.getShownEvents().containsValue(eventsList.get(i))) {
                 EventModel eventTwo = eventsList.get(i);
 
-                Polyline newestLine = mMap.addPolyline(new PolylineOptions()
+                Polyline newestLine = googleMap.addPolyline(new PolylineOptions()
                         .add(new LatLng(eventOne.getLatitude(), eventOne.getLongitude()),
                                 new LatLng(eventTwo.getLatitude(), eventTwo.getLongitude()))
-                        .color(dataCache.getMySettings().getStoryHue()));
-                lineList.add(newestLine);
+                        .color(data.getMySettings().getStoryHue()));
+                lines.add(newestLine);
 
                 return;
             }
@@ -360,22 +340,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     //--****************-- Draws Spouse Lines to earliest valid event --*****************--
     private void drawSpouseLines()
     {
-        EventModel currEvent = mMarkerMap.get(selectedMarker);
-        PersonModel currPerson = dataCache.getMyPeople().get(currEvent.getPersonID());
-        List<EventModel> eventsList = dataCache.getAllMyEvents().get(currPerson.getSpouseID());
-        eventsList = dataCache.eventChronOrder(eventsList);
-        MyFilter filter = dataCache.getMyFilter();
+        EventModel currEvent = markerToEvent.get(currentMarker);
+        PersonModel currPerson = data.getMyPeople().get(currEvent.getPersonID());
+        List<EventModel> eventsList = data.getAllMyEvents().get(currPerson.getSpouseID());
+        eventsList = data.eventChronOrder(eventsList);
+        MyFilter filter = data.getMyFilter();
 
         if (filter.doesContainEvent(currEvent.getEventType())) {
             for (int i = 0; i < eventsList.size(); i++) {
-                if (dataCache.getShownEvents().containsValue(eventsList.get(i))) {
+                if (data.getShownEvents().containsValue(eventsList.get(i))) {
                     EventModel spouseValidEvent = eventsList.get(i);
 
-                    Polyline newestLine = mMap.addPolyline(new PolylineOptions()
+                    Polyline newestLine = googleMap.addPolyline(new PolylineOptions()
                             .add(new LatLng(spouseValidEvent.getLatitude(), spouseValidEvent.getLongitude()),
                                     new LatLng(currEvent.getLatitude(), currEvent.getLongitude()))
-                            .color(dataCache.getMySettings().getSpouseHue()));
-                    lineList.add(newestLine);
+                            .color(data.getMySettings().getSpouseHue()));
+                    lines.add(newestLine);
 
                     return;
                 }
@@ -386,8 +366,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     //--****************-- Starts the family Lines Recursion --*****************--
     private void drawFamilyLines()
     {
-        EventModel currEvent = mMarkerMap.get(selectedMarker);
-        PersonModel currPerson = dataCache.getMyPeople().get(currEvent.getPersonID());
+        EventModel currEvent = markerToEvent.get(currentMarker);
+        PersonModel currPerson = data.getMyPeople().get(currEvent.getPersonID());
 
         familyLineHelper(currPerson, currEvent, 10);
     }
@@ -406,21 +386,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     //--****************-- Draws Lines to each valid person on the Father's Side --*****************--
     private void familyLineHelperFather(PersonModel currPerson, EventModel focusedEvent, int generation)
     {
-        List<EventModel> eventsList = dataCache.getAllMyEvents().get(currPerson.getFatherID());
-        eventsList = dataCache.eventChronOrder(eventsList);
+        List<EventModel> eventsList = data.getAllMyEvents().get(currPerson.getFatherID());
+        eventsList = data.eventChronOrder(eventsList);
 
         for (int i = 0; i < eventsList.size(); i++) {
-            if (currentDisplayedEvents.containsValue(eventsList.get(i))) {
+            if (idToEvent.containsValue(eventsList.get(i))) {
                 EventModel validEvent = eventsList.get(i);
 
-                Polyline newestLine = mMap.addPolyline(new PolylineOptions()
+                Polyline newestLine = googleMap.addPolyline(new PolylineOptions()
                         .add(new LatLng(focusedEvent.getLatitude(), focusedEvent.getLongitude()),
                                 new LatLng(validEvent.getLatitude(), validEvent.getLongitude()))
-                        .color(dataCache.getMySettings().getFamilyHue())
+                        .color(data.getMySettings().getFamilyHue())
                         .width(generation));
-                lineList.add(newestLine);
+                lines.add(newestLine);
 
-                PersonModel father = dataCache.getMyPeople().get(currPerson.getFatherID());
+                PersonModel father = data.getMyPeople().get(currPerson.getFatherID());
                 familyLineHelper(father, validEvent, generation / 2);
                 return;
             }
@@ -431,21 +411,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     //--****************-- Draws Lines to each valid person on the Mother's Side --*****************--
     private void familyLineHelperMother(PersonModel currPerson, EventModel focusedEvent, int generation)
     {
-        List<EventModel> eventsList = dataCache.getAllMyEvents().get(currPerson.getMotherID());
-        eventsList = dataCache.eventChronOrder(eventsList);
+        List<EventModel> eventsList = data.getAllMyEvents().get(currPerson.getMotherID());
+        eventsList = data.eventChronOrder(eventsList);
 
         for (int i = 0; i < eventsList.size(); i++) {
-            if (currentDisplayedEvents.containsValue(eventsList.get(i))) {
+            if (idToEvent.containsValue(eventsList.get(i))) {
                 EventModel validEvent = eventsList.get(i);
 
-                Polyline newestLine = mMap.addPolyline(new PolylineOptions()
+                Polyline newestLine = googleMap.addPolyline(new PolylineOptions()
                         .add(new LatLng(focusedEvent.getLatitude(), focusedEvent.getLongitude()),
                                 new LatLng(validEvent.getLatitude(), validEvent.getLongitude()))
-                        .color(dataCache.getMySettings().getFamilyHue())
+                        .color(data.getMySettings().getFamilyHue())
                         .width(generation));
-                lineList.add(newestLine);
+                lines.add(newestLine);
 
-                PersonModel mother = dataCache.getMyPeople().get(currPerson.getMotherID());
+                PersonModel mother = data.getMyPeople().get(currPerson.getMotherID());
                 familyLineHelper(mother, validEvent, generation / 2);
                 return;
             }
