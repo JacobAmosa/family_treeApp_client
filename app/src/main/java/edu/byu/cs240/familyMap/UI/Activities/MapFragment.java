@@ -199,7 +199,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMarkerMap = new HashMap<>();
 
         Map<String, Colors> allMapColors = dataCache.getColors();
-        currentDisplayedEvents = dataCache.getCurrentEvents();
+        currentDisplayedEvents = dataCache.getShownEvents();
 
         mMap = googleMap;
         mMap.setMapType(DataCache.getInstance().getMySettings().getMapType());
@@ -325,7 +325,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     {
         int i = 0;
         while (i < eventsList.size() - 1) {
-            if (dataCache.getCurrentEvents().containsValue(eventsList.get(i))) {
+            if (dataCache.getShownEvents().containsValue(eventsList.get(i))) {
                 EventModel event = eventsList.get(i);
                 i++;
 
@@ -342,7 +342,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     {
         while (i < eventsList.size()) {
 
-            if (dataCache.getCurrentEvents().containsValue(eventsList.get(i))) {
+            if (dataCache.getShownEvents().containsValue(eventsList.get(i))) {
                 EventModel eventTwo = eventsList.get(i);
 
                 Polyline newestLine = mMap.addPolyline(new PolylineOptions()
@@ -368,7 +368,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         if (filter.doesContainEvent(currEvent.getEventType())) {
             for (int i = 0; i < eventsList.size(); i++) {
-                if (dataCache.getCurrentEvents().containsValue(eventsList.get(i))) {
+                if (dataCache.getShownEvents().containsValue(eventsList.get(i))) {
                     EventModel spouseValidEvent = eventsList.get(i);
 
                     Polyline newestLine = mMap.addPolyline(new PolylineOptions()

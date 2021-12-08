@@ -100,7 +100,7 @@ public class SearchActivity extends AppCompatActivity {
         Map<String, PersonModel> availablePeople = dataCache.getMyPeople();
         getPersonsList(availablePeople, objectList);
 
-        Map<String, EventModel> availableEvents = dataCache.getCurrentEvents();
+        Map<String, EventModel> availableEvents = dataCache.getShownEvents();
         getEventsList(availableEvents, objectList);
 
         if (objectList.size() != 0) {

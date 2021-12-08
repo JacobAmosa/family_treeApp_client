@@ -82,7 +82,7 @@ public class PersonActivity extends AppCompatActivity {
     //--****************-- Initialize the PersonActivity Adapter --***************--
     private void updateUI()
     {
-        List<PersonModel> relatives = new ArrayList<>(dataCache.findRelatives(currPerson.getId()));
+        List<PersonModel> relatives = new ArrayList<>(dataCache.getFamily(currPerson.getId()));
 
         List<EventModel> eventsArrayList = new ArrayList<>(dataCache.getAllMyEvents().get(currPerson.getId()));
         eventsArrayList = dataCache.eventChronOrder(eventsArrayList);
@@ -123,7 +123,7 @@ public class PersonActivity extends AppCompatActivity {
     {
         List<EventModel> testEventList = new ArrayList<>();
         for (EventModel currEvent: eventsList) {
-            if (dataCache.getCurrentEvents().containsValue(currEvent)){
+            if (dataCache.getShownEvents().containsValue(currEvent)){
                 testEventList.add(currEvent);
             }
         }
