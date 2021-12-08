@@ -117,7 +117,7 @@ public class LoginFragment extends Fragment implements LoginTask.LoginContext, R
     @Override
     public void onExecuteComplete(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-        loginFragmentListener.loginComplete();
+        loginFragmentListener.logComplete();
     }
 
     private void enabler() {
@@ -155,7 +155,7 @@ public class LoginFragment extends Fragment implements LoginTask.LoginContext, R
     }
 
     public interface LoginFragmentListener {
-        void loginComplete();
+        void logComplete();
     }
 
     public void setLoginListener(LoginFragmentListener listener) {
