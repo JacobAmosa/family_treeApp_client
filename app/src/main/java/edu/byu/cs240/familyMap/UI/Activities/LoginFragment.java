@@ -21,130 +21,106 @@ import edu.byu.cs240.familyMap.UI.Tasks.RegisterTask;
 public class LoginFragment extends Fragment implements LoginTask.LoginContext, RegisterTask.RegisterContext {
 
     private LoginListener loginListener;
-    private TextWatcher mWatcher;
-    private RegisterRequest mRegisterRequest;
-    private LoginRequest mLoginRequest;
+    private final RegisterRequest regReq = new RegisterRequest();;
+    private final LoginRequest logReq = new LoginRequest();
+    private Button registerButt;
+    private Button loginButt;
+    private EditText fName;
+    private EditText lName;
+    private EditText host;
+    private EditText ip;
+    private EditText password;
+    private EditText username;
+    private EditText email;
 
-    private EditText mServerHost;
-    private EditText mIPAddress;
-    private EditText mUsername;
-    private EditText mPassword;
-    private EditText mFirstName;
-    private EditText mLastName;
-    private EditText mEmail;
-
-    private Button mMaleButton;
-    private Button mFemaleButton;
-
-    private Button mLoginButton;
-    private Button mRegisterButton;
-
-    //________________________ onCreate and other Fragment functions ____________________________________
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mRegisterRequest = new RegisterRequest();
-        mLoginRequest = new LoginRequest();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_login, container, false);
-        mWatcher = new Enabler();
+        TextWatcher watcher = new Enabler();
+        ip = v.findViewById(R.id.portNumberInput);
+        host = v.findViewById(R.id.serverHostInput);
+        username = v.findViewById(R.id.usernameInput);
+        password = v.findViewById(R.id.passwordInput);
+        fName = v.findViewById(R.id.firstNameInput);
+        lName = v.findViewById(R.id.lastNameInput);
+        email = v.findViewById(R.id.emailInput);
 
-        mIPAddress = v.findViewById(R.id.portNumberInput);
-        mIPAddress.addTextChangedListener(mWatcher);
+        ip.addTextChangedListener(watcher);
+        host.addTextChangedListener(watcher);
+        username.addTextChangedListener(watcher);
+        password.addTextChangedListener(watcher);
+        fName.addTextChangedListener(watcher);
+        lName.addTextChangedListener(watcher);
+        email.addTextChangedListener(watcher);
+        setRadioButtons(v);
+        setRegisterAndLogin(v);
 
-        mServerHost = v.findViewById(R.id.serverHostInput);
-        mServerHost.addTextChangedListener(mWatcher);
 
-        mUsername = v.findViewById(R.id.usernameInput);
-        mUsername.addTextChangedListener(mWatcher);
 
-        mPassword = v.findViewById(R.id.passwordInput);
-        mPassword.addTextChangedListener(mWatcher);
-
-        mFirstName = v.findViewById(R.id.firstNameInput);
-        mFirstName.addTextChangedListener(mWatcher);
-
-        mLastName = v.findViewById(R.id.lastNameInput);
-        mLastName.addTextChangedListener(mWatcher);
-
-        mEmail = v.findViewById(R.id.emailInput);
-        mEmail.addTextChangedListener(mWatcher);
-
-        mMaleButton = v.findViewById(R.id.maleButton);
-        mMaleButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                mRegisterRequest.setGender("m");
-                validate();
-            }
-        });
-
-        mFemaleButton = v.findViewById(R.id.femaleButton);
-        mFemaleButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                mRegisterRequest.setGender("f");
-                validate();
-            }
-        });
-
-        mLoginButton = v.findViewById(R.id.loginButton);
-        mRegisterButton = v.findViewById(R.id.registerButton);
-        validate();
-
-        mLoginButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-
-                mLoginRequest.setUsername(mUsername.getText().toString());
-                mLoginRequest.setPassword(mPassword.getText().toString());
-                LoginTask loginTask = new LoginTask(mServerHost.getText().toString(),
-                        mIPAddress.getText().toString(),
-                        LoginFragment.this);
-
-                loginTask.execute(mLoginRequest);
-            }
-        });
-
-        mRegisterButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-
-                mRegisterRequest.setUsername(mUsername.getText().toString());
-                mRegisterRequest.setEmail(mEmail.getText().toString());
-                mRegisterRequest.setFirstName(mFirstName.getText().toString());
-                mRegisterRequest.setLastName(mLastName.getText().toString());
-                mRegisterRequest.setPassword(mPassword.getText().toString());
-
-                RegisterTask regTask = new RegisterTask(mServerHost.getText().toString(),
-                        mIPAddress.getText().toString(),
-                        LoginFragment.this);
-
-                regTask.execute(mRegisterRequest);
-            }
-        });
 
 
         return v;
     }
 
-    //--****************************-- onExecuteComplete --*******************************--
+    public void setRadioButtons(View v){
+        Button boy = v.findViewById(R.id.maleButton);
+        boy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                regReq.setGender("m");
+                validate();
+            }
+        });
+
+        Button girl = v.findViewById(R.id.femaleButton);
+        girl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                regReq.setGender("f");
+                validate();
+            }
+        });
+    }
+
+    public void setRegisterAndLogin(View v){
+        loginButt = v.findViewById(R.id.loginButton);
+        registerButt = v.findViewById(R.id.registerButton);
+        validate();
+
+        loginButt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logReq.setPassword(password.getText().toString());
+                logReq.setUsername(username.getText().toString());
+                LoginTask loginTask = new LoginTask(host.getText().toString(),
+                        ip.getText().toString(),
+                        LoginFragment.this);
+                loginTask.execute(logReq);
+            }
+        });
+        registerButt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                regReq.setLastName(lName.getText().toString());
+                regReq.setUsername(username.getText().toString());
+                regReq.setEmail(email.getText().toString());
+                regReq.setPassword(password.getText().toString());
+                regReq.setFirstName(fName.getText().toString());
+                RegisterTask regTask = new RegisterTask(host.getText().toString(),
+                        ip.getText().toString(),
+                        LoginFragment.this);
+                regTask.execute(regReq);
+            }
+        });
+    }
+
     @Override
-    public void onExecuteComplete(String message)
-    {
+    public void onExecuteComplete(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
         loginListener.loginComplete();
     }
@@ -153,39 +129,39 @@ public class LoginFragment extends Fragment implements LoginTask.LoginContext, R
     private void validate()
     {
         if (validateRegisterButton()){
-            mRegisterButton.setEnabled(false);
+            registerButt.setEnabled(false);
         }
         else {
-            mRegisterButton.setEnabled(true);
+            registerButt.setEnabled(true);
         }
 
         if (validateLoginButton()){
-            mLoginButton.setEnabled(false);
+            loginButt.setEnabled(false);
         }
         else {
-            mLoginButton.setEnabled(true);
+            loginButt.setEnabled(true);
         }
 
     }
 
     private boolean validateRegisterButton()
     {
-        return TextUtils.isEmpty(mServerHost.getText()) ||
-                TextUtils.isEmpty(mIPAddress.getText()) ||
-                TextUtils.isEmpty(mUsername.getText()) ||
-                TextUtils.isEmpty(mPassword.getText()) ||
-                TextUtils.isEmpty(mEmail.getText()) ||
-                TextUtils.isEmpty(mFirstName.getText()) ||
-                TextUtils.isEmpty(mLastName.getText()) ||
-                mRegisterRequest.getGender() == null;
+        return TextUtils.isEmpty(host.getText()) ||
+                TextUtils.isEmpty(ip.getText()) ||
+                TextUtils.isEmpty(username.getText()) ||
+                TextUtils.isEmpty(password.getText()) ||
+                TextUtils.isEmpty(email.getText()) ||
+                TextUtils.isEmpty(fName.getText()) ||
+                TextUtils.isEmpty(lName.getText()) ||
+                regReq.getGender() == null;
     }
 
     private boolean validateLoginButton()
     {
-        return TextUtils.isEmpty(mServerHost.getText()) ||
-                TextUtils.isEmpty(mIPAddress.getText()) ||
-                TextUtils.isEmpty(mUsername.getText()) ||
-                TextUtils.isEmpty(mPassword.getText());
+        return TextUtils.isEmpty(host.getText()) ||
+                TextUtils.isEmpty(ip.getText()) ||
+                TextUtils.isEmpty(username.getText()) ||
+                TextUtils.isEmpty(password.getText());
     }
 
     ////////// Public Interface for Tasks ////////////
