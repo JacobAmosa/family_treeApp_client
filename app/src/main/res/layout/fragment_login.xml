@@ -1,202 +1,207 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UI.LoginFragment">
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    tools:context=".UI.Activities.LoginFragment"
+    android:id="@+id/login_fragment">
 
-    <Button
-        android:id="@+id/loginButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="108dp"
-        android:layout_marginBottom="113dp"
-        android:text="Login" />
-
-    <Button
-        android:id="@+id/registerButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="207dp"
-        android:layout_marginBottom="114dp"
-        android:text="Register" />
-
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/serverHost"
-        android:layout_width="277dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="87dp"
-        android:layout_marginBottom="552dp"
-        android:hint="10.0.2.2" />
-
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/serverPort"
-        android:layout_width="277dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="86dp"
-        android:layout_marginBottom="501dp"
-        android:hint="8080" />
-
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/username"
-        android:layout_width="277dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="87dp"
-        android:layout_marginBottom="449dp"
-        android:hint="myUsername" />
-
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/password"
-        android:layout_width="277dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="88dp"
-        android:layout_marginBottom="399dp"
-        android:hint="myPassword" />
-
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/firstName"
-        android:layout_width="277dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="88dp"
-        android:layout_marginBottom="349dp"
-        android:hint="John" />
-
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/lastName"
-        android:layout_width="277dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="89dp"
-        android:layout_marginBottom="298dp"
-        android:hint="Smith" />
-
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/email"
-        android:layout_width="277dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="89dp"
-        android:layout_marginBottom="243dp"
-        android:hint="johnsmith@email.com" />
-
-    <RadioGroup
-        android:id="@+id/gender"
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="89dp"
-        android:layout_marginBottom="180dp">
+        android:layout_height="match_parent"
+        android:padding="16dp">
 
-        <RadioButton
-            android:id="@+id/male"
-            android:layout_width="wrap_content"
+        <LinearLayout
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentBottom="true"
-            android:text="Male" />
+            android:layout_width="match_parent"
+            android:gravity="left|fill_horizontal"
+            android:orientation="horizontal">
 
-        <RadioButton
-            android:id="@+id/female"
-            android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/ip_address"
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionMode.Subtitle" />
+
+            <EditText
+                android:id="@+id/serverHostInput"
+                android:layout_width="255dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="10.0.2.2" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentBottom="true"
-            android:text="Female" />
-    </RadioGroup>
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="6dp"
-        android:layout_marginBottom="560dp"
-        android:text="Server Host:" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/server_port_number_login"
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionMode.Subtitle" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="7dp"
-        android:layout_marginBottom="510dp"
-        android:text="Server Port:" />
+            <EditText
+                android:id="@+id/portNumberInput"
+                android:layout_width="255dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="8080" />
+        </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="456dp"
-        android:text="User Name:" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="17dp"
-        android:layout_marginBottom="407dp"
-        android:text="Password:" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:text="@string/username_login"
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionMode.Subtitle" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="12dp"
-        android:layout_marginBottom="355dp"
-        android:text="First Name:" />
+            <EditText
+                android:id="@+id/usernameInput"
+                android:layout_width="255dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="sheila" />
+        </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="13dp"
-        android:layout_marginBottom="303dp"
-        android:text="Last Name:" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="46dp"
-        android:layout_marginBottom="250dp"
-        android:text="Email:" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:text="@string/password_login"
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionMode.Subtitle" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="36dp"
-        android:layout_marginBottom="197dp"
-        android:text="Gender:" />
+            <EditText
+                android:id="@+id/passwordInput"
+                android:layout_width="255dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:text="parker" />
+        </LinearLayout>
 
-</RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:text="@string/first_name_login"
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionMode.Subtitle" />
+
+            <EditText
+                android:id="@+id/firstNameInput"
+                android:layout_width="255dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:text="@string/last_name_login"
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionMode.Subtitle" />
+
+            <EditText
+                android:id="@+id/lastNameInput"
+                android:layout_width="255dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/email_login"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Widget.ActionMode.Subtitle" />
+
+            <EditText
+                android:id="@+id/emailInput"
+                android:layout_width="255dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName" />
+        </LinearLayout>
+
+        <RadioGroup
+            android:layout_width="181dp"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+            <RadioButton
+                android:text="@string/male_button"
+                android:layout_width="90dp"
+                android:layout_height="50dp"
+                android:id="@+id/maleButton"/>
+            <RadioButton
+                android:text="@string/female_button"
+                android:layout_width="90dp"
+                android:layout_height="50dp"
+                android:id="@+id/femaleButton"/>
+        </RadioGroup>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="210dp"
+            android:layout_height="60dp">
+
+            <Button
+                android:id="@+id/loginButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Login" />
+
+            <Button
+                android:id="@+id/registerButton"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Register" />
+        </LinearLayout>
+
+    </LinearLayout>
 
 </FrameLayout>

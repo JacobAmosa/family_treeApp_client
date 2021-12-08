@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:backgroundTint="@color/grey">
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="196dp"
+            android:layout_height="52dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="12dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="14dp"
+            android:text="@string/settings_story_lines"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/textView3"
+            android:layout_alignBottom="@+id/textView3"
+            android:layout_marginStart="0dp"
+            android:layout_marginBottom="3dp"
+            android:text="@string/settings_show_story_lines" />
+
+        <Spinner
+            android:id="@+id/life_spinner"
+            android:layout_width="130dp"
+            android:layout_height="45dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="207dp"
+            android:layout_marginTop="17dp" />
+
+        <Switch
+            android:id="@+id/life_switch"
+            android:layout_width="50dp"
+            android:layout_height="46dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="17dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
+            android:checked="true" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="189dp"
+            android:layout_height="53dp"
+            android:layout_alignStart="@+id/textView2"
+            android:layout_alignBottom="@+id/textView7"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="81dp"
+            android:layout_marginBottom="0dp"
+            android:text="@string/settings_tree_lines"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            tools:ignore="NotSibling" />
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/textView7"
+            android:layout_alignBottom="@+id/textView7"
+            android:layout_marginStart="0dp"
+            android:layout_marginBottom="4dp"
+            android:text="@string/settings_show_tree_lines" />
+
+        <Spinner
+            android:id="@+id/tree_spinner"
+            android:layout_width="132dp"
+            android:layout_height="52dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="208dp"
+            android:layout_marginTop="82dp" />
+
+        <Switch
+            android:id="@+id/tree_switch"
+            android:layout_width="50dp"
+            android:layout_height="49dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="339dp"
+            android:layout_marginLeft="339dp"
+            android:layout_marginTop="83dp"
+            android:checked="true" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/textView7"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="148dp"
+            android:text="@string/settings_spouse_lines"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView4"
+            android:layout_alignStart="@+id/textView7"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:text="@string/settings_show_spouse_lines" />
+
+        <Spinner
+            android:id="@+id/spouse_spinner"
+            android:layout_width="130dp"
+            android:layout_height="53dp"
+            android:layout_above="@+id/textView6"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="209dp"
+            android:layout_marginBottom="-24dp" />
+
+        <Switch
+            android:id="@+id/spouse_switch"
+            android:layout_width="51dp"
+            android:layout_height="53dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="152dp"
+            android:layout_marginEnd="22dp"
+            android:checked="true" />
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/textView7"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="219dp"
+            android:text="@string/settings_map_type"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/textView7"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="251dp"
+            android:text="@string/settings_map_type_info" />
+
+        <Spinner
+            android:id="@+id/map_spinner"
+            android:layout_width="166dp"
+            android:layout_height="54dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="223dp"
+            android:layout_marginBottom="327dp" />
+
+        <TextView
+            android:id="@+id/resync_text"
+            android:layout_width="364dp"
+            android:layout_height="62dp"
+            android:layout_alignStart="@+id/textView7"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="-1dp"
+            android:layout_marginBottom="249dp"
+            android:text="@string/settings_resync"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/textView7"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="258dp"
+            android:text="@string/settings_resync_info" />
+
+        <TextView
+            android:id="@+id/logout_text"
+            android:layout_width="363dp"
+            android:layout_height="60dp"
+            android:layout_alignStart="@+id/textView7"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginBottom="178dp"
+            android:text="@string/settings_logout"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+
+        <TextView
+            android:id="@+id/textView17"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/textView7"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginBottom="187dp"
+            android:text="@string/settings_logout_info" />
+
+
+    </RelativeLayout>
+
+</FrameLayout>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.byu.cs240.familyMap">
-
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -20,7 +19,26 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FamilyMap"
         android:usesCleartextTraffic="true">
-
+        <activity
+            android:name=".UI.Activities.SettingActivity"
+            android:theme="@style/Theme.FamilyMap.NoActionBar"
+            android:parentActivityName=".UI.Activities.MainActivity"/>
+        <activity
+            android:name=".UI.Activities.SearchActivity"
+            android:theme="@style/Theme.FamilyMap.NoActionBar"
+            android:parentActivityName=".UI.Activities.MainActivity"/>
+        <activity
+            android:name=".UI.Activities.FilterActivity"
+            android:theme="@style/Theme.FamilyMap.NoActionBar"
+            android:parentActivityName=".UI.Activities.MainActivity"/>
+        <activity
+            android:name=".UI.Activities.EventActivity"
+            android:theme="@style/Theme.FamilyMap.NoActionBar"
+            android:parentActivityName=".UI.Activities.MainActivity"/>
+        <activity
+            android:name=".UI.Activities.PersonActivity"
+            android:theme="@style/Theme.FamilyMap.NoActionBar"
+            android:parentActivityName=".UI.Activities.MainActivity"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -31,10 +49,10 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="${MAPS_API_KEY}" />
+            android:value="AIzaSyCI4Wu2DwJ8N043eeP0ZeV0mxqjXjejJ_I" />
 
         <activity
-            android:name=".UI.MainActivity"
+            android:name=".UI.Activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

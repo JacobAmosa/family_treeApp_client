@@ -1,135 +1,183 @@
 package edu.byu.cs240.familyMap.Server;
+import java.net.*;
+import java.io.*;
+import com.google.gson.*;
 
-import com.google.gson.Gson;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
+import edu.byu.cs240.familyMap.Data.Request.LoginRequest;
+import edu.byu.cs240.familyMap.Data.Request.RegisterRequest;
+import shared.EventResult;
+import shared.PersonResult;
 import shared.RegisterLoginResult;
 
-//this class sends and receives requests from the server.
 public class ServerProxy {
 
-    private final String serverHost;
-    private final String serverPort;
+    private static ServerProxy serverProxy;
 
-    public ServerProxy(String host, String port){
-        this.serverHost = host;
-        this.serverPort = port;
-    }
-
-    public RegisterLoginResult login(String username, String password){
-        String reqData = "{\"username\":\"" + username + "\", \"password\":\"" + password + "\"}";
-        return executePostRequest("login", reqData);
-    }
-
-    public RegisterLoginResult register(String username, String password, String email, String firstName,
-                                        String lastName, String gender){
-        String reqData = "{\"username\":\"" + username + "\", \"password\":\"" + password +
-                "\", \"email\":\"" + email + "\", \"firstName\":\"" + firstName +
-                "\", \"lastName\":\"" + lastName + "\", \"gender\":\"" + gender + "\"}";
-        return executePostRequest("register", reqData);
-    }
-
-    public String getPeople(String authToken){
-        return executeGetRequest("person", authToken);
-    }
-
-    public String getEvents(String authToken){
-        return executeGetRequest("event", authToken);
-    }
-
-    public String executeGetRequest(String endpoint, String authToken){
-        String resData = null;
-        try{
-            URL url = new URL("http://" + this.serverHost + ":" + this.serverPort + "/" + endpoint);
-
-            //Start constructing HTTP body.
-            HttpURLConnection http = (HttpURLConnection)url.openConnection();
-            http.setRequestMethod("GET");
-
-            //Indicates that this request will not contain an HTTP request body.
-            http.setDoOutput(false);
-
-            //Specifies that we would like to receive response in JSON format by adding the Accept header to the request.
-            http.addRequestProperty("Accept", "application/json");
-            http.addRequestProperty("Authorization", authToken);
-
-            //connects to server and sends the HTTP request.
-            http.connect();
-
-            if (http.getResponseCode() == HttpURLConnection.HTTP_OK){
-                InputStream resBody = http.getInputStream();
-                resData = readString(resBody);
-            }else{
-                System.out.println("ERROR: " + http.getResponseMessage());
-                InputStream resBody = http.getErrorStream();
-                resData = readString(resBody);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
+    // ========================== Singleton Constructor ========================================
+    public static ServerProxy initialize()
+    {
+        if (serverProxy == null){
+            serverProxy = new ServerProxy();
         }
-        return resData;
+        return serverProxy;
     }
 
-    public RegisterLoginResult executePostRequest(String endpoint, String reqData){
+
+    //____________________________________ Login _________________________________
+    public RegisterLoginResult login(String serverHost, String serverPort, LoginRequest loginRequest)
+    {
+        String reqData = "{\"username\":\"" + loginRequest.getLoginUserName() + "\", \"password\":\"" + loginRequest.getLoginPassWord() + "\"}";
+        Gson gson = new Gson();
+        try {
+            URL url = new URL("http://" + serverHost + ":" + serverPort + "/user/login");
+
+            HttpURLConnection http = (HttpURLConnection)url.openConnection();
+            http.setRequestMethod("POST");
+            http.setDoOutput(true);
+            http.connect();
+            OutputStream reqBody = http.getOutputStream();
+            writeString(reqData, reqBody);
+            reqBody.close();
+
+            if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                System.out.println("Information successfully retrieved");
+                InputStream respBody = http.getInputStream();
+                String respData = readString(respBody);
+                RegisterLoginResult loginResult = gson.fromJson(respData, RegisterLoginResult.class);
+                return loginResult;
+            }
+            else {
+                return new RegisterLoginResult(http.getResponseMessage(),false);
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            return new RegisterLoginResult("Error with Login", false);
+        }
+    }
+
+    //____________________________________ Register _________________________________
+    public RegisterLoginResult register(String serverHost, String serverPort, RegisterRequest regReq)
+    {
+        String reqData = "{\"username\":\"" + regReq.getUserNameID() + "\", \"password\":\"" + regReq.getUserPassword() +
+            "\", \"email\":\"" + regReq.getUserEmail() + "\", \"firstName\":\"" + regReq.getUserFirstName() +
+            "\", \"lastName\":\"" + regReq.getUserLastName() + "\", \"gender\":\"" + regReq.getUserGender() + "\"}";
         String resData = null;
+        Gson gson = new Gson();
+        try {
+            URL url = new URL("http://" + serverHost + ":" + serverPort + "/user/register");
 
-        try{
-            URL url = new URL("http://" + serverHost + ":" + serverPort + "/user/" + endpoint);
-
-            //Start constructing HTTP body.
             HttpURLConnection http = (HttpURLConnection)url.openConnection();
             http.setRequestMethod("POST");
 
-            //Indicates that this request will not contain an HTTP request body.
             http.setDoOutput(true);
 
-            //connects to server and sends the HTTP request.
             http.connect();
 
             OutputStream reqBody = http.getOutputStream();
             writeString(reqData, reqBody);
             reqBody.close();
-            if (http.getResponseCode() == HttpURLConnection.HTTP_OK){
+            if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 System.out.println("Information successfully retrieved");
-                InputStream resBody = http.getInputStream();
-                resData = readString(resBody);
-            }else{
-                System.out.println("ERROR: " + http.getResponseMessage());
-                InputStream resBody = http.getErrorStream();
-                resData = readString(resBody);
+                InputStream respBody = http.getInputStream();
+                String respData = readString(respBody);
+                RegisterLoginResult regResult = gson.fromJson(respData, RegisterLoginResult.class);
+                return regResult;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            else {
+                return new RegisterLoginResult(http.getResponseMessage(), false);
+            }
         }
-        Gson gson = new Gson();
-        return gson.fromJson(resData, RegisterLoginResult.class);
+        catch (IOException e) {
+            e.printStackTrace();
+            return new RegisterLoginResult("Error with Registering User", false);
+        }
     }
 
-    //readString allows you to read a string from an inputStream.
-    private String readString(InputStream is) throws IOException {
+    //____________________________________ Get all People _________________________________
+    public PersonResult getAllPeople(String serverHost, String serverPort, String authToken)
+    {
+        Gson gson = new Gson();
+        try {
+            URL url = new URL("http://" + serverHost + ":" + serverPort + "/person");
+
+            HttpURLConnection http = (HttpURLConnection)url.openConnection();
+
+            http.setRequestMethod("GET");
+            http.setDoOutput(false);
+            http.addRequestProperty("Authorization", authToken);
+            http.addRequestProperty("Accept", "application/json");
+
+            http.connect();
+
+            if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
+
+                InputStream respBody = http.getInputStream();
+                String respData = readString(respBody);
+                PersonResult allPersonResults = gson.fromJson(respData, PersonResult.class);
+                return allPersonResults;
+            }
+            else {
+                return new PersonResult(false,http.getResponseMessage());
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            return new PersonResult(false, "Error with retrieving all people");
+        }
+    }
+
+    //____________________________________ Get all Events _________________________________
+    public EventResult getAllEvents(String serverHost, String serverPort, String authToken)
+    {
+        Gson gson = new Gson();
+        try {
+            URL url = new URL("http://" + serverHost + ":" + serverPort + "/event");
+
+            HttpURLConnection http = (HttpURLConnection)url.openConnection();
+
+            http.setRequestMethod("GET");
+            http.setDoOutput(false);
+            http.addRequestProperty("Authorization", authToken);
+            http.addRequestProperty("Accept", "application/json");
+
+            http.connect();
+
+            if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
+
+                InputStream respBody = http.getInputStream();
+                String respData = readString(respBody);
+                EventResult allEventResults = gson.fromJson(respData, EventResult.class);
+                return allEventResults;
+            }
+            else {
+                return new EventResult(false, http.getResponseMessage());
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            return new EventResult(false, "Error with retrieving all events");
+        }
+    }
+
+    //--****************-- InputStream to String --***************--
+    private static String readString(InputStream is) throws IOException
+    {
         StringBuilder sb = new StringBuilder();
         InputStreamReader sr = new InputStreamReader(is);
         char[] buf = new char[1024];
         int len;
-        while((len = sr.read(buf)) > 0){
+        while ((len = sr.read(buf)) > 0) {
             sb.append(buf, 0, len);
         }
         return sb.toString();
     }
 
-    //writeString writes a string to an OutputStream
-    private void writeString (String str, OutputStream os) throws IOException {
+    //--****************-- Write a String from an OutputStream --***************--
+    private static void writeString(String str, OutputStream os) throws IOException
+    {
         OutputStreamWriter sw = new OutputStreamWriter(os);
         sw.write(str);
         sw.flush();
     }
-
 }
