@@ -21,23 +21,23 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".UI.Activities.SettingActivity"
-            android:theme="@style/Theme.FamilyMap.NoActionBar"
+
             android:parentActivityName=".UI.Activities.MainActivity"/>
         <activity
             android:name=".UI.Activities.SearchActivity"
-            android:theme="@style/Theme.FamilyMap.NoActionBar"
+
             android:parentActivityName=".UI.Activities.MainActivity"/>
         <activity
             android:name=".UI.Activities.FilterActivity"
-            android:theme="@style/Theme.FamilyMap.NoActionBar"
+
             android:parentActivityName=".UI.Activities.MainActivity"/>
         <activity
             android:name=".UI.Activities.EventActivity"
-            android:theme="@style/Theme.FamilyMap.NoActionBar"
+
             android:parentActivityName=".UI.Activities.MainActivity"/>
         <activity
             android:name=".UI.Activities.PersonActivity"
-            android:theme="@style/Theme.FamilyMap.NoActionBar"
+
             android:parentActivityName=".UI.Activities.MainActivity"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

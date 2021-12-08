@@ -42,10 +42,10 @@ public class PersonActivity extends AppCompatActivity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person);
-        if (getSupportActionBar() != null){
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("FamilyMap: Person Details");
-        }
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("FamilyMap: Person Details");
+
         currPerson = model.getSelectedPerson();
         mFirstName = findViewById(R.id.person_first_name);
         mLastName = findViewById(R.id.person_last_name);
