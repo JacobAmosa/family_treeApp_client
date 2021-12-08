@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import edu.byu.cs240.familyMap.Data.Model;
+import edu.byu.cs240.familyMap.Data.DataCache;
 import edu.byu.cs240.familyMap.R;
 import shared.EventModel;
 import shared.PersonModel;
@@ -30,7 +30,7 @@ public class PersonActivityListAdapter extends BaseExpandableListAdapter {
     private TextView mSecondLine;
     private ImageView mListIcon;
 
-    private Model model = Model.initialize();
+    private DataCache dataCache = DataCache.getInstance();
 
     // ========================== Constructor ========================================
     public PersonActivityListAdapter(Context context, List<String> listDataHeader,
@@ -173,7 +173,7 @@ public class PersonActivityListAdapter extends BaseExpandableListAdapter {
         if (persons == null) {
             String eventInfo = events.getEventType() + ", " + events.getCity() + ", " + events.getCountry() + " " + events.getYear();
             mFirstLine.setText(eventInfo);
-            PersonModel currPerson = model.getPeople().get(events.getPersonID());
+            PersonModel currPerson = dataCache.getMyPeople().get(events.getPersonID());
             String personInfo = currPerson.getFirstName() + " " + currPerson.getLastName();
             mSecondLine.setText(personInfo);
         }

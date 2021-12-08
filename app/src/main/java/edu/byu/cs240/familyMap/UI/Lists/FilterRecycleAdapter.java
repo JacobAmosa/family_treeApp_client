@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import edu.byu.cs240.familyMap.Data.MyFilter;
-import edu.byu.cs240.familyMap.Data.Model;
+import edu.byu.cs240.familyMap.Data.DataCache;
 import edu.byu.cs240.familyMap.R;
 
 /** FilterRecyclerAdapter
@@ -23,7 +23,7 @@ public class FilterRecycleAdapter extends RecyclerView.Adapter<FilterHolder> {
     private List<String> eventTypesList;
     private LayoutInflater inflater;
 
-    private MyFilter filter = Model.initialize().getFilter();
+    private MyFilter filter = DataCache.getInstance().getMyFilter();
 
     // ========================== Constructor ========================================
     public FilterRecycleAdapter(List<String> newEventTypes, Context context)

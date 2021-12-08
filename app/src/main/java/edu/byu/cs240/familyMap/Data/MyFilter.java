@@ -16,8 +16,8 @@ public class MyFilter {
         maternal = true;
         boy = true;
         girl = true;
-        events = new ArrayList<>(Model.initialize().getEventTypes());
-        displayed = new ArrayList<>(Model.initialize().getEventTypes());
+        events = new ArrayList<>(DataCache.getInstance().getTypes());
+        displayed = new ArrayList<>(DataCache.getInstance().getTypes());
     }
 
     public void addMyEvent(String type) {

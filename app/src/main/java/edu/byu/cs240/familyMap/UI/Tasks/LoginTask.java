@@ -2,7 +2,7 @@ package edu.byu.cs240.familyMap.UI.Tasks;
 
 import android.os.AsyncTask;
 
-import edu.byu.cs240.familyMap.Data.Model;
+import edu.byu.cs240.familyMap.Data.DataCache;
 import edu.byu.cs240.familyMap.Data.Request.LoginRequest;
 import edu.byu.cs240.familyMap.Server.ServerProxy;
 import shared.*;
@@ -42,11 +42,11 @@ public class LoginTask extends AsyncTask<LoginRequest, RegisterLoginResult, Regi
     protected void onPostExecute(RegisterLoginResult loginResult)
     {
         if (loginResult.isSuccess()){
-            Model model = Model.initialize();
+            DataCache dataCache = DataCache.getInstance();
 
-            model.setServerHost(serverHost);
-            model.setIpAddress(ipAddress);
-            model.setAuthToken(loginResult.getAuthToken());
+            dataCache.setHost(serverHost);
+            dataCache.setIp(ipAddress);
+            dataCache.setAuthToken(loginResult.getAuthToken());
 
             DataTask dataTask = new DataTask(serverHost, ipAddress, this);
             dataTask.execute(loginResult.getAuthToken());

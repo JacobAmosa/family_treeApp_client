@@ -33,7 +33,7 @@ import java.util.Map;
 
 import edu.byu.cs240.familyMap.Data.MyFilter;
 import edu.byu.cs240.familyMap.Data.Colors;
-import edu.byu.cs240.familyMap.Data.Model;
+import edu.byu.cs240.familyMap.Data.DataCache;
 import edu.byu.cs240.familyMap.Data.MySettings;
 import edu.byu.cs240.familyMap.R;
 import shared.EventModel;
@@ -59,7 +59,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private ImageView mIcon;
     private boolean isEvent;
 
-    private Model model = Model.initialize();
+    private DataCache dataCache = DataCache.getInstance();
 
     // ========================== Constructors ========================================
     public MapFragment()
@@ -123,7 +123,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     removeLines();
                 }
             }
-            mMap.setMapType(model.getSettings().getMapType());
+            mMap.setMapType(dataCache.getMySettings().getMapType());
         }
 
         if (selectedMarker != null && mMarkerMap != null) {
@@ -180,8 +180,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void textClicked()
     {
         Intent intent = new Intent(getActivity(), PersonActivity.class);
-        PersonModel person = model.getPeople().get(mMarkerMap.get(selectedMarker).getPersonID());
-        model.setSelectedPerson(person);
+        PersonModel person = dataCache.getMyPeople().get(mMarkerMap.get(selectedMarker).getPersonID());
+        dataCache.setClickedPerson(person);
         startActivity(intent);
     }
 
@@ -198,11 +198,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         selectedMarker = null;
         mMarkerMap = new HashMap<>();
 
-        Map<String, Colors> allMapColors = model.getEventColor();
-        currentDisplayedEvents = model.getDisplayedEvents();
+        Map<String, Colors> allMapColors = dataCache.getColors();
+        currentDisplayedEvents = dataCache.getCurrentEvents();
 
         mMap = googleMap;
-        mMap.setMapType(Model.initialize().getSettings().getMapType());
+        mMap.setMapType(DataCache.getInstance().getMySettings().getMapType());
 
         ////////// Map Marker Click Listener ///////////
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -223,7 +223,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     .title(currEvent.getEventType()));
             mMarkerMap.put(marker, currEvent);
 
-            if (model.getSelectedEvent() == currEvent){  // For Event Fragment selection
+            if (dataCache.getClickedEvent() == currEvent){  // For Event Fragment selection
                 selectedMarker = marker;
             }
         }
@@ -246,7 +246,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void markerClicked(Marker marker)
     {
         EventModel currEvent = mMarkerMap.get(marker);
-        PersonModel currPerson = model.getPeople().get(currEvent.getPersonID());
+        PersonModel currPerson = dataCache.getMyPeople().get(currEvent.getPersonID());
         String newName = currPerson.getFirstName() + " " + currPerson.getLastName();
         String eventInfo = currEvent.getEventType() + ": " + currEvent.getCity() + ", " + currEvent.getCountry();
         String yearInfo = "(" + currEvent.getYear() + ")";
@@ -273,7 +273,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mIcon.setOnClickListener(onClickText);
 
         selectedMarker = marker;
-        model.setSelectedEvent(currEvent);
+        dataCache.setClickedEvent(currEvent);
         drawLines();
     }
 
@@ -281,7 +281,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     //______________________________________ Drawing Map Lines Functions _________________________________________________
     private void drawLines()
     {
-        MySettings settings = Model.initialize().getSettings();
+        MySettings settings = DataCache.getInstance().getMySettings();
 
         removeLines();
 
@@ -307,13 +307,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     //--****************-- Start Drawing Story Lines --*****************--
     private void drawStoryLines() {
-        Model model = Model.initialize();
+        DataCache dataCache = DataCache.getInstance();
         EventModel currEvent = mMarkerMap.get(selectedMarker);
-        PersonModel currPerson = model.getPeople().get(currEvent.getPersonID());
-        List<EventModel> eventsList = model.getAllPersonEvents().get(currPerson.getId());
-        eventsList = model.sortEventsByYear(eventsList);
+        PersonModel currPerson = dataCache.getMyPeople().get(currEvent.getPersonID());
+        List<EventModel> eventsList = dataCache.getAllMyEvents().get(currPerson.getId());
+        eventsList = dataCache.sortEventsByYear(eventsList);
 
-        if (!model.getFilter().doesContainEvent(currEvent.getEventType())) {
+        if (!dataCache.getMyFilter().doesContainEvent(currEvent.getEventType())) {
             return;
         }
 
@@ -325,7 +325,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     {
         int i = 0;
         while (i < eventsList.size() - 1) {
-            if (model.getDisplayedEvents().containsValue(eventsList.get(i))) {
+            if (dataCache.getCurrentEvents().containsValue(eventsList.get(i))) {
                 EventModel event = eventsList.get(i);
                 i++;
 
@@ -342,13 +342,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     {
         while (i < eventsList.size()) {
 
-            if (model.getDisplayedEvents().containsValue(eventsList.get(i))) {
+            if (dataCache.getCurrentEvents().containsValue(eventsList.get(i))) {
                 EventModel eventTwo = eventsList.get(i);
 
                 Polyline newestLine = mMap.addPolyline(new PolylineOptions()
                         .add(new LatLng(eventOne.getLatitude(), eventOne.getLongitude()),
                                 new LatLng(eventTwo.getLatitude(), eventTwo.getLongitude()))
-                        .color(model.getSettings().getStoryHue()));
+                        .color(dataCache.getMySettings().getStoryHue()));
                 lineList.add(newestLine);
 
                 return;
@@ -361,20 +361,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void drawSpouseLines()
     {
         EventModel currEvent = mMarkerMap.get(selectedMarker);
-        PersonModel currPerson = model.getPeople().get(currEvent.getPersonID());
-        List<EventModel> eventsList = model.getAllPersonEvents().get(currPerson.getSpouseID());
-        eventsList = model.sortEventsByYear(eventsList);
-        MyFilter filter = model.getFilter();
+        PersonModel currPerson = dataCache.getMyPeople().get(currEvent.getPersonID());
+        List<EventModel> eventsList = dataCache.getAllMyEvents().get(currPerson.getSpouseID());
+        eventsList = dataCache.sortEventsByYear(eventsList);
+        MyFilter filter = dataCache.getMyFilter();
 
         if (filter.doesContainEvent(currEvent.getEventType())) {
             for (int i = 0; i < eventsList.size(); i++) {
-                if (model.getDisplayedEvents().containsValue(eventsList.get(i))) {
+                if (dataCache.getCurrentEvents().containsValue(eventsList.get(i))) {
                     EventModel spouseValidEvent = eventsList.get(i);
 
                     Polyline newestLine = mMap.addPolyline(new PolylineOptions()
                             .add(new LatLng(spouseValidEvent.getLatitude(), spouseValidEvent.getLongitude()),
                                     new LatLng(currEvent.getLatitude(), currEvent.getLongitude()))
-                            .color(model.getSettings().getSpouseHue()));
+                            .color(dataCache.getMySettings().getSpouseHue()));
                     lineList.add(newestLine);
 
                     return;
@@ -387,7 +387,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void drawFamilyLines()
     {
         EventModel currEvent = mMarkerMap.get(selectedMarker);
-        PersonModel currPerson = model.getPeople().get(currEvent.getPersonID());
+        PersonModel currPerson = dataCache.getMyPeople().get(currEvent.getPersonID());
 
         familyLineHelper(currPerson, currEvent, 10);
     }
@@ -406,8 +406,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     //--****************-- Draws Lines to each valid person on the Father's Side --*****************--
     private void familyLineHelperFather(PersonModel currPerson, EventModel focusedEvent, int generation)
     {
-        List<EventModel> eventsList = model.getAllPersonEvents().get(currPerson.getFatherID());
-        eventsList = model.sortEventsByYear(eventsList);
+        List<EventModel> eventsList = dataCache.getAllMyEvents().get(currPerson.getFatherID());
+        eventsList = dataCache.sortEventsByYear(eventsList);
 
         for (int i = 0; i < eventsList.size(); i++) {
             if (currentDisplayedEvents.containsValue(eventsList.get(i))) {
@@ -416,11 +416,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 Polyline newestLine = mMap.addPolyline(new PolylineOptions()
                         .add(new LatLng(focusedEvent.getLatitude(), focusedEvent.getLongitude()),
                                 new LatLng(validEvent.getLatitude(), validEvent.getLongitude()))
-                        .color(model.getSettings().getFamilyHue())
+                        .color(dataCache.getMySettings().getFamilyHue())
                         .width(generation));
                 lineList.add(newestLine);
 
-                PersonModel father = model.getPeople().get(currPerson.getFatherID());
+                PersonModel father = dataCache.getMyPeople().get(currPerson.getFatherID());
                 familyLineHelper(father, validEvent, generation / 2);
                 return;
             }
@@ -431,8 +431,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     //--****************-- Draws Lines to each valid person on the Mother's Side --*****************--
     private void familyLineHelperMother(PersonModel currPerson, EventModel focusedEvent, int generation)
     {
-        List<EventModel> eventsList = model.getAllPersonEvents().get(currPerson.getMotherID());
-        eventsList = model.sortEventsByYear(eventsList);
+        List<EventModel> eventsList = dataCache.getAllMyEvents().get(currPerson.getMotherID());
+        eventsList = dataCache.sortEventsByYear(eventsList);
 
         for (int i = 0; i < eventsList.size(); i++) {
             if (currentDisplayedEvents.containsValue(eventsList.get(i))) {
@@ -441,11 +441,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 Polyline newestLine = mMap.addPolyline(new PolylineOptions()
                         .add(new LatLng(focusedEvent.getLatitude(), focusedEvent.getLongitude()),
                                 new LatLng(validEvent.getLatitude(), validEvent.getLongitude()))
-                        .color(model.getSettings().getFamilyHue())
+                        .color(dataCache.getMySettings().getFamilyHue())
                         .width(generation));
                 lineList.add(newestLine);
 
-                PersonModel mother = model.getPeople().get(currPerson.getMotherID());
+                PersonModel mother = dataCache.getMyPeople().get(currPerson.getMotherID());
                 familyLineHelper(mother, validEvent, generation / 2);
                 return;
             }

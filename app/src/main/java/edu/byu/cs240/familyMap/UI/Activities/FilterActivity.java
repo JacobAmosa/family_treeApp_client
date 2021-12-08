@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.byu.cs240.familyMap.Data.Model;
+import edu.byu.cs240.familyMap.Data.DataCache;
 import edu.byu.cs240.familyMap.R;
 import edu.byu.cs240.familyMap.UI.Lists.FilterRecycleAdapter;
 
@@ -23,7 +23,7 @@ public class FilterActivity extends AppCompatActivity {
     private RecyclerView mFilterRecycler;
     private FilterRecycleAdapter mFilterAdapter;
 
-    private Model model = Model.initialize();
+    private DataCache dataCache = DataCache.getInstance();
 
     //________________________ onCreate and other Activity functions ____________________________________
     @Override
@@ -49,7 +49,7 @@ public class FilterActivity extends AppCompatActivity {
         defaultFilter.add("Male Events");
         defaultFilter.add("Female Events");
 
-        List<String> eventTypes = model.getEventTypes();
+        List<String> eventTypes = dataCache.getTypes();
         defaultFilter.addAll(eventTypes);
         mFilterAdapter = new FilterRecycleAdapter(defaultFilter, this);
         mFilterRecycler.setAdapter(mFilterAdapter);

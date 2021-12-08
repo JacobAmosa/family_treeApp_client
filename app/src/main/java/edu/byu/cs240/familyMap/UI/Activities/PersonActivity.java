@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.byu.cs240.familyMap.Data.Model;
+import edu.byu.cs240.familyMap.Data.DataCache;
 import edu.byu.cs240.familyMap.R;
 import edu.byu.cs240.familyMap.UI.Lists.PersonActivityListAdapter;
 import shared.EventModel;
@@ -34,7 +34,7 @@ public class PersonActivity extends AppCompatActivity {
     private ExpandableListView mListView;
     private ExpandableListAdapter mListAdapter;
 
-    private Model model = Model.initialize();
+    private DataCache dataCache = DataCache.getInstance();
 
     //________________________ onCreate and other Activity functions ____________________________________
     @Override
@@ -46,7 +46,7 @@ public class PersonActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("FamilyMap: Person Details");
 
-        currPerson = model.getSelectedPerson();
+        currPerson = dataCache.getClickedPerson();
         mFirstName = findViewById(R.id.person_first_name);
         mLastName = findViewById(R.id.person_last_name);
         mGender = findViewById(R.id.person_gender);
@@ -64,12 +64,12 @@ public class PersonActivity extends AppCompatActivity {
                 if (groupPosition == 0){
                     Intent intent = new Intent(PersonActivity.this, EventActivity.class);
                     intent.putExtra("Event", "Event");
-                    model.setSelectedEvent((EventModel) mListAdapter.getChild(groupPosition, childPosition));
+                    dataCache.setClickedEvent((EventModel) mListAdapter.getChild(groupPosition, childPosition));
                     startActivity(intent);
                 }
                 else {
                     Intent intent = new Intent(PersonActivity.this, PersonActivity.class);
-                    model.setSelectedPerson((PersonModel) mListAdapter.getChild(groupPosition, childPosition));
+                    dataCache.setClickedPerson((PersonModel) mListAdapter.getChild(groupPosition, childPosition));
                     startActivity(intent);
                 }
                 return false;
@@ -82,10 +82,10 @@ public class PersonActivity extends AppCompatActivity {
     //--****************-- Initialize the PersonActivity Adapter --***************--
     private void updateUI()
     {
-        List<PersonModel> relatives = new ArrayList<>(model.findRelatives(currPerson.getId()));
+        List<PersonModel> relatives = new ArrayList<>(dataCache.findRelatives(currPerson.getId()));
 
-        List<EventModel> eventsArrayList = new ArrayList<>(model.getAllPersonEvents().get(currPerson.getId()));
-        eventsArrayList = model.sortEventsByYear(eventsArrayList);
+        List<EventModel> eventsArrayList = new ArrayList<>(dataCache.getAllMyEvents().get(currPerson.getId()));
+        eventsArrayList = dataCache.sortEventsByYear(eventsArrayList);
 
         List<String> headers = new ArrayList<>();
         headers.add("Events");
@@ -123,7 +123,7 @@ public class PersonActivity extends AppCompatActivity {
     {
         List<EventModel> testEventList = new ArrayList<>();
         for (EventModel currEvent: eventsList) {
-            if (model.getDisplayedEvents().containsValue(currEvent)){
+            if (dataCache.getCurrentEvents().containsValue(currEvent)){
                 testEventList.add(currEvent);
             }
         }
@@ -136,7 +136,7 @@ public class PersonActivity extends AppCompatActivity {
         List<PersonModel> filteredPersonsList = new ArrayList<>();
 
         for (PersonModel person: personsList) {
-            if (model.isPersonDisplayed(person)){
+            if (dataCache.isPersonDisplayed(person)){
                 filteredPersonsList.add(person);
             }
         }

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import edu.byu.cs240.familyMap.Data.Model;
+import edu.byu.cs240.familyMap.Data.DataCache;
 import edu.byu.cs240.familyMap.R;
 import edu.byu.cs240.familyMap.UI.Activities.EventActivity;
 import edu.byu.cs240.familyMap.UI.Activities.PersonActivity;
@@ -81,7 +81,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchHolder> {
     {
         Intent intent = new Intent(context, EventActivity.class);
         intent.putExtra("Event", "Event");
-        Model.initialize().setSelectedEvent(event);
+        DataCache.getInstance().setClickedEvent(event);
         context.startActivity(intent);
     }
 
@@ -89,7 +89,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchHolder> {
     private void personsClicked(PersonModel person)
     {
         Intent intent = new Intent(context, PersonActivity.class);
-        Model.initialize().setSelectedPerson(person);
+        DataCache.getInstance().setClickedPerson(person);
         context.startActivity(intent);
     }
 }

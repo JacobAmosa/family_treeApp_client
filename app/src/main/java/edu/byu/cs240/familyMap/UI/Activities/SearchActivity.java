@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import edu.byu.cs240.familyMap.Data.Model;
+import edu.byu.cs240.familyMap.Data.DataCache;
 import edu.byu.cs240.familyMap.R;
 import edu.byu.cs240.familyMap.UI.Lists.SearchAdapter;
 import shared.EventModel;
@@ -34,7 +34,7 @@ public class SearchActivity extends AppCompatActivity {
     private RecyclerView mSearchRecycler;
     private RecyclerView.Adapter mSearchAdapter;
 
-    private Model model = Model.initialize();
+    private DataCache dataCache = DataCache.getInstance();
 
     //________________________ onCreate and other Activity functions ____________________________________
     @Override
@@ -97,10 +97,10 @@ public class SearchActivity extends AppCompatActivity {
     {
         List<Object> objectList = new ArrayList<>();
 
-        Map<String, PersonModel> availablePeople = model.getPeople();
+        Map<String, PersonModel> availablePeople = dataCache.getMyPeople();
         getPersonsList(availablePeople, objectList);
 
-        Map<String, EventModel> availableEvents = model.getDisplayedEvents();
+        Map<String, EventModel> availableEvents = dataCache.getCurrentEvents();
         getEventsList(availableEvents, objectList);
 
         if (objectList.size() != 0) {

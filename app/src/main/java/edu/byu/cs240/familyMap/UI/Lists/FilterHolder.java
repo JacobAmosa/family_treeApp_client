@@ -7,7 +7,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import edu.byu.cs240.familyMap.Data.MyFilter;
-import edu.byu.cs240.familyMap.Data.Model;
+import edu.byu.cs240.familyMap.Data.DataCache;
 import edu.byu.cs240.familyMap.R;
 
 /** FilterHolder
@@ -18,7 +18,7 @@ public class FilterHolder extends RecyclerView.ViewHolder {
     private TextView mEventType;
     private TextView mEventDescription;
     private Switch mEventSwitch;
-    private MyFilter filter = Model.initialize().getFilter();
+    private MyFilter filter = DataCache.getInstance().getMyFilter();
 
     // ========================== Constructor ========================================
     public FilterHolder(View itemView)

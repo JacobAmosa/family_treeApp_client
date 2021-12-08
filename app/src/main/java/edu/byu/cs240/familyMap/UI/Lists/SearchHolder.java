@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import edu.byu.cs240.familyMap.Data.Model;
+import edu.byu.cs240.familyMap.Data.DataCache;
 import edu.byu.cs240.familyMap.R;
 import shared.EventModel;
 import shared.PersonModel;
@@ -49,8 +49,8 @@ public class SearchHolder extends RecyclerView.ViewHolder {
                 + event.getCountry() + " " + event.getYear();
         mFirstLine.setText(eventInfo);
 
-        Model model = Model.initialize();
-        PersonModel currPerson = model.getPeople().get(event.getPersonID());
+        DataCache dataCache = DataCache.getInstance();
+        PersonModel currPerson = dataCache.getMyPeople().get(event.getPersonID());
         String personInfo = currPerson.getFirstName() + " " + currPerson.getLastName();
         mDescription.setText(personInfo);
         mIcon.setImageDrawable(convertView.getResources().getDrawable(R.drawable.map_pointer_icon));

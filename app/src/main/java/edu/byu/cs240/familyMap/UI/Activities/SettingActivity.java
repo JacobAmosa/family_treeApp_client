@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.maps.GoogleMap;
 
-import edu.byu.cs240.familyMap.Data.Model;
+import edu.byu.cs240.familyMap.Data.DataCache;
 import edu.byu.cs240.familyMap.Data.MySettings;
 import edu.byu.cs240.familyMap.R;
 import edu.byu.cs240.familyMap.UI.Tasks.DataTask;
@@ -40,7 +40,7 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
     private TextView mLogout;
 
     private MySettings currSettings;
-    private Model model = Model.initialize();
+    private DataCache dataCache = DataCache.getInstance();
 
     //______________________________________ onCreate and other Activity functions _________________________________________________
     @Override
@@ -52,11 +52,11 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         mLifeStory = findViewById(R.id.life_switch);
-        mLifeStory.setChecked(model.getSettings().isLineForStory());
+        mLifeStory.setChecked(dataCache.getMySettings().isLineForStory());
         mFamilyTree = findViewById(R.id.tree_switch);
-        mFamilyTree.setChecked(model.getSettings().isLineForFamily());
+        mFamilyTree.setChecked(dataCache.getMySettings().isLineForFamily());
         mSpouseLines = findViewById(R.id.spouse_switch);
-        mSpouseLines.setChecked(model.getSettings().isLineForSpouse());
+        mSpouseLines.setChecked(dataCache.getMySettings().isLineForSpouse());
 
         mLifeSpinner = findViewById(R.id.life_spinner);
         mFamilySpinner = findViewById(R.id.tree_spinner);
@@ -85,10 +85,10 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
                 R.array.map_types, R.layout.support_simple_spinner_dropdown_item);
         mMapSpinner.setAdapter(mapTypes);
 
-        mLifeSpinner.setSelection(model.getSettings().getSpinChoices(0));
-        mFamilySpinner.setSelection(model.getSettings().getSpinChoices(1));
-        mSpouseSpinner.setSelection(model.getSettings().getSpinChoices(2));
-        mMapSpinner.setSelection(model.getSettings().getSpinChoices(3));
+        mLifeSpinner.setSelection(dataCache.getMySettings().getSpinChoices(0));
+        mFamilySpinner.setSelection(dataCache.getMySettings().getSpinChoices(1));
+        mSpouseSpinner.setSelection(dataCache.getMySettings().getSpinChoices(2));
+        mMapSpinner.setSelection(dataCache.getMySettings().getSpinChoices(3));
 
         //--****************************-- Spinner Listeners --*******************************--
         mLifeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -97,16 +97,16 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
             {
                 switch (position) {
                     case 0:
-                        model.getSettings().setStoryHue(Color.BLUE);
-                        model.getSettings().setSpinChoices(0, 0);
+                        dataCache.getMySettings().setStoryHue(Color.BLUE);
+                        dataCache.getMySettings().setSpinChoices(0, 0);
                         break;
                     case 1:
-                        model.getSettings().setStoryHue(Color.CYAN);
-                        model.getSettings().setSpinChoices(1, 0);
+                        dataCache.getMySettings().setStoryHue(Color.CYAN);
+                        dataCache.getMySettings().setSpinChoices(1, 0);
                         break;
                     case 2:
-                        model.getSettings().setStoryHue(Color.BLACK);
-                        model.getSettings().setSpinChoices(2, 0);
+                        dataCache.getMySettings().setStoryHue(Color.BLACK);
+                        dataCache.getMySettings().setSpinChoices(2, 0);
                         break;
                 }
             }
@@ -122,16 +122,16 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
             {
                 switch (position) {
                     case 0:
-                        model.getSettings().setFamilyHue(Color.GREEN);
-                        model.getSettings().setSpinChoices(0, 1);
+                        dataCache.getMySettings().setFamilyHue(Color.GREEN);
+                        dataCache.getMySettings().setSpinChoices(0, 1);
                         break;
                     case 1:
-                        model.getSettings().setFamilyHue(Color.YELLOW);
-                        model.getSettings().setSpinChoices(1, 1);
+                        dataCache.getMySettings().setFamilyHue(Color.YELLOW);
+                        dataCache.getMySettings().setSpinChoices(1, 1);
                         break;
                     case 2:
-                        model.getSettings().setFamilyHue(Color.WHITE);
-                        model.getSettings().setSpinChoices(2, 1);
+                        dataCache.getMySettings().setFamilyHue(Color.WHITE);
+                        dataCache.getMySettings().setSpinChoices(2, 1);
                         break;
                 }
             }
@@ -147,16 +147,16 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
             {
                 switch (position) {
                     case 0:
-                        model.getSettings().setSpouseHue(Color.MAGENTA);
-                        model.getSettings().setSpinChoices(0, 2);
+                        dataCache.getMySettings().setSpouseHue(Color.MAGENTA);
+                        dataCache.getMySettings().setSpinChoices(0, 2);
                         break;
                     case 1:
-                        model.getSettings().setSpouseHue(Color.RED);
-                        model.getSettings().setSpinChoices(1, 2);
+                        dataCache.getMySettings().setSpouseHue(Color.RED);
+                        dataCache.getMySettings().setSpinChoices(1, 2);
                         break;
                     case 2:
-                        model.getSettings().setSpouseHue(Color.GRAY);
-                        model.getSettings().setSpinChoices(2, 2);
+                        dataCache.getMySettings().setSpouseHue(Color.GRAY);
+                        dataCache.getMySettings().setSpinChoices(2, 2);
                         break;
                 }
             }
@@ -172,20 +172,20 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
             {
                 switch (position) {
                     case 0:
-                        model.getSettings().setMapType(GoogleMap.MAP_TYPE_NORMAL);
-                        model.getSettings().setSpinChoices(0, 3);
+                        dataCache.getMySettings().setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                        dataCache.getMySettings().setSpinChoices(0, 3);
                         break;
                     case 1:
-                        model.getSettings().setMapType(GoogleMap.MAP_TYPE_HYBRID);
-                        model.getSettings().setSpinChoices(1, 3);
+                        dataCache.getMySettings().setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                        dataCache.getMySettings().setSpinChoices(1, 3);
                         break;
                     case 2:
-                        model.getSettings().setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-                        model.getSettings().setSpinChoices(2, 3);
+                        dataCache.getMySettings().setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                        dataCache.getMySettings().setSpinChoices(2, 3);
                         break;
                     case 3:
-                        model.getSettings().setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-                        model.getSettings().setSpinChoices(2, 3);
+                        dataCache.getMySettings().setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+                        dataCache.getMySettings().setSpinChoices(2, 3);
                         break;
                 }
             }
@@ -200,7 +200,7 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
             {
-                model.getSettings().setLineForStory(isChecked);
+                dataCache.getMySettings().setLineForStory(isChecked);
             }
         });
 
@@ -208,7 +208,7 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
             {
-                model.getSettings().setLineForFamily(isChecked);
+                dataCache.getMySettings().setLineForFamily(isChecked);
             }
         });
 
@@ -216,7 +216,7 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
             {
-                model.getSettings().setLineForSpouse(isChecked);
+                dataCache.getMySettings().setLineForSpouse(isChecked);
             }
         });
 
@@ -224,7 +224,7 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
             @Override
             public void onClick(View v)
             {
-                currSettings = model.getSettings();
+                currSettings = dataCache.getMySettings();
                 resyncApp();
             }
         });
@@ -262,17 +262,17 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
     //--****************-- Re-Sync Function --***************--
     private void resyncApp()
     {
-        DataTask dataTask = new DataTask(model.getServerHost(), model.getIpAddress(), this);
-        dataTask.execute(model.getAuthToken());
+        DataTask dataTask = new DataTask(dataCache.getHost(), dataCache.getIp(), this);
+        dataTask.execute(dataCache.getAuthToken());
     }
 
     //--****************-- Re-sync Communication --***************--
     @Override
     public void onExecuteCompleteData(String message)
     {
-        if (message.equals("Welcome, " + model.getUsers().getFirstName() + " " + model.getUsers().getLastName())){
+        if (message.equals("Welcome, " + dataCache.getUsers().getFirstName() + " " + dataCache.getUsers().getLastName())){
             Toast.makeText(this,"Success in Re-sync", Toast.LENGTH_SHORT).show();
-            model.setSettings(currSettings);
+            dataCache.setMySettings(currSettings);
 
             Intent intent = new Intent(this, MainActivity.class);
             Bundle bundle = new Bundle();

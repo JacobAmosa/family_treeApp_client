@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.byu.cs240.familyMap.Data.Model;
+import edu.byu.cs240.familyMap.Data.DataCache;
 import edu.byu.cs240.familyMap.Server.ServerProxy;
 import shared.EventModel;
 import shared.EventResult;
@@ -22,7 +22,7 @@ public class DataTask extends AsyncTask<String, Boolean, Boolean> {
     private String serverHost;
     private String ipAddress;
     private DataContext context;
-    private Model model = Model.initialize();
+    private DataCache dataCache = DataCache.getInstance();
 
     ///////// Interface //////////
     public interface DataContext {
@@ -53,10 +53,10 @@ public class DataTask extends AsyncTask<String, Boolean, Boolean> {
     @Override
     protected void onPostExecute(Boolean bool) {
         if (bool){
-            PersonModel user = model.getUsers();
+            PersonModel user = dataCache.getUsers();
             String message = "Welcome, " + user.getFirstName() + " " + user.getLastName();
             context.onExecuteCompleteData(message);
-            model.initializeAllData();
+            dataCache.initializeAllData();
         }
         else {
             context.onExecuteCompleteData("Error occurred with user data");
@@ -75,14 +75,14 @@ public class DataTask extends AsyncTask<String, Boolean, Boolean> {
         if (allPersonResults.isSuccess()){
             Map<String, PersonModel> personsMap = new HashMap<String, PersonModel>();
             ArrayList<PersonModel> personArray = allPersonResults.getPersons();
-            model.setUsers(personArray.get(0));
+            dataCache.setUsers(personArray.get(0));
 
             for(int i = 0; i < personArray.size(); i++){
                 String personID = personArray.get(i).getId();
                 personsMap.put(personID, personArray.get(i));
             }
 
-            model.setPeople(personsMap);
+            dataCache.setMyPeople(personsMap);
             return true;
         }
         return false;
@@ -100,7 +100,7 @@ public class DataTask extends AsyncTask<String, Boolean, Boolean> {
                 eventsMap.put(eventID, eventsArray.get(i));
             }
 
-            model.setEvents(eventsMap);
+            dataCache.setMyEvents(eventsMap);
             return true;
         }
         return false;
