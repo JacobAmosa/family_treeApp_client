@@ -26,7 +26,7 @@ public class ServerProxy {
     //____________________________________ Login _________________________________
     public RegisterLoginResult login(String serverHost, String serverPort, LoginRequest loginRequest)
     {
-        String reqData = "{\"username\":\"" + loginRequest.getLoginUserName() + "\", \"password\":\"" + loginRequest.getLoginPassWord() + "\"}";
+        String reqData = "{\"username\":\"" + loginRequest.getUsername() + "\", \"password\":\"" + loginRequest.getPassword() + "\"}";
         Gson gson = new Gson();
         try {
             URL url = new URL("http://" + serverHost + ":" + serverPort + "/user/login");
@@ -59,9 +59,9 @@ public class ServerProxy {
     //____________________________________ Register _________________________________
     public RegisterLoginResult register(String serverHost, String serverPort, RegisterRequest regReq)
     {
-        String reqData = "{\"username\":\"" + regReq.getUserNameID() + "\", \"password\":\"" + regReq.getUserPassword() +
-            "\", \"email\":\"" + regReq.getUserEmail() + "\", \"firstName\":\"" + regReq.getUserFirstName() +
-            "\", \"lastName\":\"" + regReq.getUserLastName() + "\", \"gender\":\"" + regReq.getUserGender() + "\"}";
+        String reqData = "{\"username\":\"" + regReq.getUsername() + "\", \"password\":\"" + regReq.getPassword() +
+            "\", \"email\":\"" + regReq.getEmail() + "\", \"firstName\":\"" + regReq.getFirstName() +
+            "\", \"lastName\":\"" + regReq.getLastName() + "\", \"gender\":\"" + regReq.getGender() + "\"}";
         String resData = null;
         Gson gson = new Gson();
         try {

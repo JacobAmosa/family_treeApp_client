@@ -1,97 +1,62 @@
 package edu.byu.cs240.familyMap.Data.Request;
 
 public class RegisterRequest {
+    private String username = null;
+    private String password = null;
+    private String email = null;
+    private String fName = null;
+    private String lName = null;
+    private String gender = null;
 
-    private String userName;
-    private String password;
-    private String email;
-    private String firstName;
-    private String lastName;
-    private String gender;
+    public RegisterRequest() {}
 
-    // ========================== Constructors ========================================
-
-    public RegisterRequest()
-    {
-        userName = null;
-        password = null;
-        email = null;
-        firstName = null;
-        lastName = null;
-        gender = null;
+    public String getLastName() {
+        return lName;
     }
 
-    public RegisterRequest(String userNameID, String userPassword, String userEmail,
-                           String userFirstName, String userLastName, String userGender)
-    {
-        this.userName = userNameID;
-        this.password = userPassword;
-        this.email = userEmail;
-        this.firstName = userFirstName;
-        this.lastName = userLastName;
-        this.gender = userGender;
+    public void setLastName(String name) {
+        this.lName = name;
     }
 
-    //_______________________________ Getters and Setters __________________________________________
-
-    public String getUserNameID()
-    {
-        return userName;
-    }
-
-    public void setUserNameID(String userNameID)
-    {
-        this.userName = userNameID;
-    }
-
-    public String getUserPassword()
-    {
-        return password;
-    }
-
-    public void setUserPassword(String userPassword)
-    {
-        this.password = userPassword;
-    }
-
-    public String getUserEmail()
-    {
+    public String getEmail() {
         return email;
     }
 
-    public void setUserEmail(String userEmail)
-    {
-        this.email = userEmail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getUserFirstName()
-    {
-        return firstName;
-    }
-
-    public void setUserFirstName(String userFirstName)
-    {
-        this.firstName = userFirstName;
-    }
-
-    public String getUserLastName()
-    {
-        return lastName;
-    }
-
-    public void setUserLastName(String userLastName)
-    {
-        this.lastName = userLastName;
-    }
-
-    public String getUserGender()
-    {
+    public String getGender() {
         return gender;
     }
 
-    public void setUserGender(String userGender)
-    {
-        this.gender = userGender;
+    public void setGender(String gender) {
+        this.gender = gender;
     }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password){
+        this.password = password;
+    }
+
+    public String getFirstName() {
+        return fName;
+    }
+
+    public void setFirstName(String name) {
+        this.fName = name;
+    }
+
 
 }

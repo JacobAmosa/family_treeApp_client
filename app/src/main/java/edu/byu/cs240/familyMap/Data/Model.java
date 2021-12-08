@@ -18,7 +18,7 @@ public class Model {
     private Map<String, List<EventModel>> allPersonEvents;
 
     private Settings settings;
-    private Filter filter;
+    private MyFilter filter;
 
     private List<String> eventTypes;
     private Map<String, MapColor> eventColor;
@@ -97,11 +97,11 @@ public class Model {
         settings = newSettings;
     }
 
-    public Filter getFilter() {
+    public MyFilter getFilter() {
         return filter;
     }
 
-    public void setFilter(Filter filter) {
+    public void setFilter(MyFilter filter) {
         this.filter = filter;
     }
 
@@ -196,13 +196,13 @@ public class Model {
     //____________________________________ Data Manipulation Methods _________________________________
     //--****************-- Is Person Included in the Filter --***************--
     public boolean isPersonDisplayed(PersonModel currPerson) {
-        if (!filter.isMales() && currPerson.getGender().toLowerCase().equals("m")) {
+        if (!filter.isBoy() && currPerson.getGender().toLowerCase().equals("m")) {
             return false;
-        } else if (!filter.isFemales() && currPerson.getGender().toLowerCase().equals("f")) {
+        } else if (!filter.isGirl() && currPerson.getGender().toLowerCase().equals("f")) {
             return false;
-        } else if (!filter.isFathersSide() && paternalAncestors.contains(currPerson.getId())) {
+        } else if (!filter.isPaternal() && paternalAncestors.contains(currPerson.getId())) {
             return false;
-        } else return filter.isMothersSide() || !maternalAncestors.contains(currPerson.getId());
+        } else return filter.isMaternal() || !maternalAncestors.contains(currPerson.getId());
     }
 
     //--****************-- Sort Events By Year --***************--
@@ -253,7 +253,7 @@ public class Model {
         for (EventModel currEvent : events.values()) {
             PersonModel eventPerson = getPeople().get(currEvent.getPersonID());
             if (!isPersonDisplayed(eventPerson)) {
-            } else if (!filter.containsEventType(currEvent.getEventType())) {
+            } else if (!filter.doesContainEvent(currEvent.getEventType())) {
             } else {
                 displayedEvents.put(currEvent.getEventID(), currEvent);
             }
@@ -272,7 +272,7 @@ public class Model {
             settings = new Settings();
         }
         if (filter == null) {
-            filter = new Filter();
+            filter = new MyFilter();
         }
     }
 

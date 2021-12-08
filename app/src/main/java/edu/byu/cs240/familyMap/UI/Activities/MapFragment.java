@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.byu.cs240.familyMap.Data.Filter;
+import edu.byu.cs240.familyMap.Data.MyFilter;
 import edu.byu.cs240.familyMap.Data.MapColor;
 import edu.byu.cs240.familyMap.Data.Model;
 import edu.byu.cs240.familyMap.Data.Settings;
@@ -313,7 +313,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         List<EventModel> eventsList = model.getAllPersonEvents().get(currPerson.getId());
         eventsList = model.sortEventsByYear(eventsList);
 
-        if (!model.getFilter().containsEventType(currEvent.getEventType())) {
+        if (!model.getFilter().doesContainEvent(currEvent.getEventType())) {
             return;
         }
 
@@ -364,9 +364,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         PersonModel currPerson = model.getPeople().get(currEvent.getPersonID());
         List<EventModel> eventsList = model.getAllPersonEvents().get(currPerson.getSpouseID());
         eventsList = model.sortEventsByYear(eventsList);
-        Filter filter = model.getFilter();
+        MyFilter filter = model.getFilter();
 
-        if (filter.containsEventType(currEvent.getEventType())) {
+        if (filter.doesContainEvent(currEvent.getEventType())) {
             for (int i = 0; i < eventsList.size(); i++) {
                 if (model.getDisplayedEvents().containsValue(eventsList.get(i))) {
                     EventModel spouseValidEvent = eventsList.get(i);

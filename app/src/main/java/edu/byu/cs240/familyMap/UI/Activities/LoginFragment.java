@@ -81,7 +81,7 @@ public class LoginFragment extends Fragment implements LoginTask.LoginContext, R
             @Override
             public void onClick(View v)
             {
-                mRegisterRequest.setUserGender("m");
+                mRegisterRequest.setGender("m");
                 validate();
             }
         });
@@ -92,7 +92,7 @@ public class LoginFragment extends Fragment implements LoginTask.LoginContext, R
             @Override
             public void onClick(View v)
             {
-                mRegisterRequest.setUserGender("f");
+                mRegisterRequest.setGender("f");
                 validate();
             }
         });
@@ -107,8 +107,8 @@ public class LoginFragment extends Fragment implements LoginTask.LoginContext, R
             public void onClick(View v)
             {
 
-                mLoginRequest.setLoginUserName(mUsername.getText().toString());
-                mLoginRequest.setLoginPassWord(mPassword.getText().toString());
+                mLoginRequest.setUsername(mUsername.getText().toString());
+                mLoginRequest.setPassword(mPassword.getText().toString());
                 LoginTask loginTask = new LoginTask(mServerHost.getText().toString(),
                         mIPAddress.getText().toString(),
                         LoginFragment.this);
@@ -123,11 +123,11 @@ public class LoginFragment extends Fragment implements LoginTask.LoginContext, R
             public void onClick(View v)
             {
 
-                mRegisterRequest.setUserNameID(mUsername.getText().toString());
-                mRegisterRequest.setUserEmail(mEmail.getText().toString());
-                mRegisterRequest.setUserFirstName(mFirstName.getText().toString());
-                mRegisterRequest.setUserLastName(mLastName.getText().toString());
-                mRegisterRequest.setUserPassword(mPassword.getText().toString());
+                mRegisterRequest.setUsername(mUsername.getText().toString());
+                mRegisterRequest.setEmail(mEmail.getText().toString());
+                mRegisterRequest.setFirstName(mFirstName.getText().toString());
+                mRegisterRequest.setLastName(mLastName.getText().toString());
+                mRegisterRequest.setPassword(mPassword.getText().toString());
 
                 RegisterTask regTask = new RegisterTask(mServerHost.getText().toString(),
                         mIPAddress.getText().toString(),
@@ -177,7 +177,7 @@ public class LoginFragment extends Fragment implements LoginTask.LoginContext, R
                 TextUtils.isEmpty(mEmail.getText()) ||
                 TextUtils.isEmpty(mFirstName.getText()) ||
                 TextUtils.isEmpty(mLastName.getText()) ||
-                mRegisterRequest.getUserGender() == null;
+                mRegisterRequest.getGender() == null;
     }
 
     private boolean validateLoginButton()

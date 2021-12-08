@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import edu.byu.cs240.familyMap.Data.Filter;
+import edu.byu.cs240.familyMap.Data.MyFilter;
 import edu.byu.cs240.familyMap.Data.Model;
 import edu.byu.cs240.familyMap.R;
 
@@ -23,7 +23,7 @@ public class FilterRecycleAdapter extends RecyclerView.Adapter<FilterHolder> {
     private List<String> eventTypesList;
     private LayoutInflater inflater;
 
-    private Filter filter = Model.initialize().getFilter();
+    private MyFilter filter = Model.initialize().getFilter();
 
     // ========================== Constructor ========================================
     public FilterRecycleAdapter(List<String> newEventTypes, Context context)
@@ -80,16 +80,16 @@ public class FilterRecycleAdapter extends RecyclerView.Adapter<FilterHolder> {
     {
         switch (index){
             case 0:
-                filter.setFathersSide(isChecked);
+                filter.setPaternal(isChecked);
                 break;
             case 1:
-                filter.setMothersSide(isChecked);
+                filter.setMaternal(isChecked);
                 break;
             case 2:
-                filter.setMales(isChecked);
+                filter.setBoy(isChecked);
                 break;
             case 3:
-                filter.setFemales(isChecked);
+                filter.setGirl(isChecked);
                 break;
         }
     }
@@ -97,11 +97,11 @@ public class FilterRecycleAdapter extends RecyclerView.Adapter<FilterHolder> {
     //--****************-- Event Type Filters onClick Function --***************--
     private void eventFilterClicked(int index, boolean isChecked)
     {
-        if (filter.containsEventType(eventTypesList.get(index)) && !isChecked){
-            filter.deleteEventType(eventTypesList.get(index));
+        if (filter.doesContainEvent(eventTypesList.get(index)) && !isChecked){
+            filter.removeType(eventTypesList.get(index));
         }
-        else if (!filter.containsEventType((eventTypesList.get(index)))){
-            filter.addEvent(eventTypesList.get(index));
+        else if (!filter.doesContainEvent((eventTypesList.get(index)))){
+            filter.addMyEvent(eventTypesList.get(index));
         }
     }
 }
