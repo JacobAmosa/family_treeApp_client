@@ -32,8 +32,8 @@ public class LoginTask extends AsyncTask<LoginRequest, RegisterLoginResult, Regi
     @Override
     protected RegisterLoginResult doInBackground(LoginRequest... logReqs)
     {
-        ServerProxy serverProxy = ServerProxy.initialize();
-        RegisterLoginResult loginResult = serverProxy.login(serverHost, ipAddress, logReqs[0]);
+        ServerProxy serverProxy = ServerProxy.getInstance();
+        RegisterLoginResult loginResult = serverProxy.loginUser(serverHost, ipAddress, logReqs[0]);
         return loginResult;
     }
 

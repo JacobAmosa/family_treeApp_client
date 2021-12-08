@@ -41,9 +41,9 @@ public class DataTask extends AsyncTask<String, Boolean, Boolean> {
     @Override
     protected Boolean doInBackground(String... authToken)
     {
-        ServerProxy serverProxy = ServerProxy.initialize();
-        PersonResult allPersonResults = serverProxy.getAllPeople(serverHost, ipAddress, authToken[0]);
-        EventResult allEventResults = serverProxy.getAllEvents(serverHost, ipAddress, authToken[0]);
+        ServerProxy serverProxy = ServerProxy.getInstance();
+        PersonResult allPersonResults = serverProxy.getPeople(serverHost, ipAddress, authToken[0]);
+        EventResult allEventResults = serverProxy.getEvents(serverHost, ipAddress, authToken[0]);
 
         Boolean bool = sendDataToModel(allPersonResults, allEventResults);
         return bool;

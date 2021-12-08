@@ -32,9 +32,9 @@ import java.util.List;
 import java.util.Map;
 
 import edu.byu.cs240.familyMap.Data.MyFilter;
-import edu.byu.cs240.familyMap.Data.MapColor;
+import edu.byu.cs240.familyMap.Data.Colors;
 import edu.byu.cs240.familyMap.Data.Model;
-import edu.byu.cs240.familyMap.Data.Settings;
+import edu.byu.cs240.familyMap.Data.MySettings;
 import edu.byu.cs240.familyMap.R;
 import shared.EventModel;
 import shared.PersonModel;
@@ -123,7 +123,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     removeLines();
                 }
             }
-            mMap.setMapType(model.getSettings().getCurrMapType());
+            mMap.setMapType(model.getSettings().getMapType());
         }
 
         if (selectedMarker != null && mMarkerMap != null) {
@@ -198,11 +198,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         selectedMarker = null;
         mMarkerMap = new HashMap<>();
 
-        Map<String, MapColor> allMapColors = model.getEventColor();
+        Map<String, Colors> allMapColors = model.getEventColor();
         currentDisplayedEvents = model.getDisplayedEvents();
 
         mMap = googleMap;
-        mMap.setMapType(Model.initialize().getSettings().getCurrMapType());
+        mMap.setMapType(Model.initialize().getSettings().getMapType());
 
         ////////// Map Marker Click Listener ///////////
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -216,10 +216,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         for (EventModel currEvent : currentDisplayedEvents.values()) {
             LatLng currentPosition = new LatLng(currEvent.getLatitude(), currEvent.getLongitude());
-            MapColor mapColor = allMapColors.get(currEvent.getEventType().toLowerCase());
+            Colors mapColor = allMapColors.get(currEvent.getEventType().toLowerCase());
 
             Marker marker = mMap.addMarker(new MarkerOptions().position(currentPosition)
-                    .icon(BitmapDescriptorFactory.defaultMarker(mapColor.getColor()))
+                    .icon(BitmapDescriptorFactory.defaultMarker(mapColor.getHue()))
                     .title(currEvent.getEventType()));
             mMarkerMap.put(marker, currEvent);
 
@@ -281,17 +281,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     //______________________________________ Drawing Map Lines Functions _________________________________________________
     private void drawLines()
     {
-        Settings settings = Model.initialize().getSettings();
+        MySettings settings = Model.initialize().getSettings();
 
         removeLines();
 
-        if (settings.isStoryLines()){
+        if (settings.isLineForStory()){
             drawStoryLines();
         }
-        if (settings.isSpouseLines()){
+        if (settings.isLineForSpouse()){
             drawSpouseLines();
         }
-        if (settings.isFamilyLines()){
+        if (settings.isLineForFamily()){
             drawFamilyLines();
         }
     }
@@ -348,7 +348,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 Polyline newestLine = mMap.addPolyline(new PolylineOptions()
                         .add(new LatLng(eventOne.getLatitude(), eventOne.getLongitude()),
                                 new LatLng(eventTwo.getLatitude(), eventTwo.getLongitude()))
-                        .color(model.getSettings().getStoryColor()));
+                        .color(model.getSettings().getStoryHue()));
                 lineList.add(newestLine);
 
                 return;
@@ -374,7 +374,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     Polyline newestLine = mMap.addPolyline(new PolylineOptions()
                             .add(new LatLng(spouseValidEvent.getLatitude(), spouseValidEvent.getLongitude()),
                                     new LatLng(currEvent.getLatitude(), currEvent.getLongitude()))
-                            .color(model.getSettings().getSpouseColor()));
+                            .color(model.getSettings().getSpouseHue()));
                     lineList.add(newestLine);
 
                     return;
@@ -416,7 +416,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 Polyline newestLine = mMap.addPolyline(new PolylineOptions()
                         .add(new LatLng(focusedEvent.getLatitude(), focusedEvent.getLongitude()),
                                 new LatLng(validEvent.getLatitude(), validEvent.getLongitude()))
-                        .color(model.getSettings().getFamilyColor())
+                        .color(model.getSettings().getFamilyHue())
                         .width(generation));
                 lineList.add(newestLine);
 
@@ -441,7 +441,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 Polyline newestLine = mMap.addPolyline(new PolylineOptions()
                         .add(new LatLng(focusedEvent.getLatitude(), focusedEvent.getLongitude()),
                                 new LatLng(validEvent.getLatitude(), validEvent.getLongitude()))
-                        .color(model.getSettings().getFamilyColor())
+                        .color(model.getSettings().getFamilyHue())
                         .width(generation));
                 lineList.add(newestLine);
 

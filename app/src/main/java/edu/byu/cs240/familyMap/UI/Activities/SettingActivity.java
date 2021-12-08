@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.google.android.gms.maps.GoogleMap;
 
 import edu.byu.cs240.familyMap.Data.Model;
-import edu.byu.cs240.familyMap.Data.Settings;
+import edu.byu.cs240.familyMap.Data.MySettings;
 import edu.byu.cs240.familyMap.R;
 import edu.byu.cs240.familyMap.UI.Tasks.DataTask;
 
@@ -39,7 +39,7 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
     private TextView mResync;
     private TextView mLogout;
 
-    private Settings currSettings;
+    private MySettings currSettings;
     private Model model = Model.initialize();
 
     //______________________________________ onCreate and other Activity functions _________________________________________________
@@ -52,11 +52,11 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         mLifeStory = findViewById(R.id.life_switch);
-        mLifeStory.setChecked(model.getSettings().isStoryLines());
+        mLifeStory.setChecked(model.getSettings().isLineForStory());
         mFamilyTree = findViewById(R.id.tree_switch);
-        mFamilyTree.setChecked(model.getSettings().isFamilyLines());
+        mFamilyTree.setChecked(model.getSettings().isLineForFamily());
         mSpouseLines = findViewById(R.id.spouse_switch);
-        mSpouseLines.setChecked(model.getSettings().isSpouseLines());
+        mSpouseLines.setChecked(model.getSettings().isLineForSpouse());
 
         mLifeSpinner = findViewById(R.id.life_spinner);
         mFamilySpinner = findViewById(R.id.tree_spinner);
@@ -85,10 +85,10 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
                 R.array.map_types, R.layout.support_simple_spinner_dropdown_item);
         mMapSpinner.setAdapter(mapTypes);
 
-        mLifeSpinner.setSelection(model.getSettings().getSettingsSpinnerSelections(0));
-        mFamilySpinner.setSelection(model.getSettings().getSettingsSpinnerSelections(1));
-        mSpouseSpinner.setSelection(model.getSettings().getSettingsSpinnerSelections(2));
-        mMapSpinner.setSelection(model.getSettings().getSettingsSpinnerSelections(3));
+        mLifeSpinner.setSelection(model.getSettings().getSpinChoices(0));
+        mFamilySpinner.setSelection(model.getSettings().getSpinChoices(1));
+        mSpouseSpinner.setSelection(model.getSettings().getSpinChoices(2));
+        mMapSpinner.setSelection(model.getSettings().getSpinChoices(3));
 
         //--****************************-- Spinner Listeners --*******************************--
         mLifeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -97,16 +97,16 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
             {
                 switch (position) {
                     case 0:
-                        model.getSettings().setStoryColor(Color.BLUE);
-                        model.getSettings().setSettingsSpinnerSelections(0, 0);
+                        model.getSettings().setStoryHue(Color.BLUE);
+                        model.getSettings().setSpinChoices(0, 0);
                         break;
                     case 1:
-                        model.getSettings().setStoryColor(Color.CYAN);
-                        model.getSettings().setSettingsSpinnerSelections(1, 0);
+                        model.getSettings().setStoryHue(Color.CYAN);
+                        model.getSettings().setSpinChoices(1, 0);
                         break;
                     case 2:
-                        model.getSettings().setStoryColor(Color.BLACK);
-                        model.getSettings().setSettingsSpinnerSelections(2, 0);
+                        model.getSettings().setStoryHue(Color.BLACK);
+                        model.getSettings().setSpinChoices(2, 0);
                         break;
                 }
             }
@@ -122,16 +122,16 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
             {
                 switch (position) {
                     case 0:
-                        model.getSettings().setFamilyColor(Color.GREEN);
-                        model.getSettings().setSettingsSpinnerSelections(0, 1);
+                        model.getSettings().setFamilyHue(Color.GREEN);
+                        model.getSettings().setSpinChoices(0, 1);
                         break;
                     case 1:
-                        model.getSettings().setFamilyColor(Color.YELLOW);
-                        model.getSettings().setSettingsSpinnerSelections(1, 1);
+                        model.getSettings().setFamilyHue(Color.YELLOW);
+                        model.getSettings().setSpinChoices(1, 1);
                         break;
                     case 2:
-                        model.getSettings().setFamilyColor(Color.WHITE);
-                        model.getSettings().setSettingsSpinnerSelections(2, 1);
+                        model.getSettings().setFamilyHue(Color.WHITE);
+                        model.getSettings().setSpinChoices(2, 1);
                         break;
                 }
             }
@@ -147,16 +147,16 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
             {
                 switch (position) {
                     case 0:
-                        model.getSettings().setSpouseColor(Color.MAGENTA);
-                        model.getSettings().setSettingsSpinnerSelections(0, 2);
+                        model.getSettings().setSpouseHue(Color.MAGENTA);
+                        model.getSettings().setSpinChoices(0, 2);
                         break;
                     case 1:
-                        model.getSettings().setSpouseColor(Color.RED);
-                        model.getSettings().setSettingsSpinnerSelections(1, 2);
+                        model.getSettings().setSpouseHue(Color.RED);
+                        model.getSettings().setSpinChoices(1, 2);
                         break;
                     case 2:
-                        model.getSettings().setSpouseColor(Color.GRAY);
-                        model.getSettings().setSettingsSpinnerSelections(2, 2);
+                        model.getSettings().setSpouseHue(Color.GRAY);
+                        model.getSettings().setSpinChoices(2, 2);
                         break;
                 }
             }
@@ -172,20 +172,20 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
             {
                 switch (position) {
                     case 0:
-                        model.getSettings().setCurrMapType(GoogleMap.MAP_TYPE_NORMAL);
-                        model.getSettings().setSettingsSpinnerSelections(0, 3);
+                        model.getSettings().setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                        model.getSettings().setSpinChoices(0, 3);
                         break;
                     case 1:
-                        model.getSettings().setCurrMapType(GoogleMap.MAP_TYPE_HYBRID);
-                        model.getSettings().setSettingsSpinnerSelections(1, 3);
+                        model.getSettings().setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                        model.getSettings().setSpinChoices(1, 3);
                         break;
                     case 2:
-                        model.getSettings().setCurrMapType(GoogleMap.MAP_TYPE_SATELLITE);
-                        model.getSettings().setSettingsSpinnerSelections(2, 3);
+                        model.getSettings().setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                        model.getSettings().setSpinChoices(2, 3);
                         break;
                     case 3:
-                        model.getSettings().setCurrMapType(GoogleMap.MAP_TYPE_TERRAIN);
-                        model.getSettings().setSettingsSpinnerSelections(2, 3);
+                        model.getSettings().setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+                        model.getSettings().setSpinChoices(2, 3);
                         break;
                 }
             }
@@ -200,7 +200,7 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
             {
-                model.getSettings().setStoryLines(isChecked);
+                model.getSettings().setLineForStory(isChecked);
             }
         });
 
@@ -208,7 +208,7 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
             {
-                model.getSettings().setFamilyLines(isChecked);
+                model.getSettings().setLineForFamily(isChecked);
             }
         });
 
@@ -216,7 +216,7 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
             {
-                model.getSettings().setSpouseLines(isChecked);
+                model.getSettings().setLineForSpouse(isChecked);
             }
         });
 

@@ -17,11 +17,11 @@ public class Model {
     private Map<String, EventModel> displayedEvents;
     private Map<String, List<EventModel>> allPersonEvents;
 
-    private Settings settings;
+    private MySettings settings;
     private MyFilter filter;
 
     private List<String> eventTypes;
-    private Map<String, MapColor> eventColor;
+    private Map<String, Colors> eventColor;
     private PersonModel user;
 
     private Set<String> paternalAncestors;
@@ -89,11 +89,11 @@ public class Model {
         return allPersonEvents;
     }
 
-    public Settings getSettings() {
+    public MySettings getSettings() {
         return settings;
     }
 
-    public void setSettings(Settings newSettings) {
+    public void setSettings(MySettings newSettings) {
         settings = newSettings;
     }
 
@@ -113,11 +113,11 @@ public class Model {
         this.eventTypes = eventTypes;
     }
 
-    public Map<String, MapColor> getEventColor() {
+    public Map<String, Colors> getEventColor() {
         return eventColor;
     }
 
-    public void setEventColor(Map<String, MapColor> eventColor) {
+    public void setEventColor(Map<String, Colors> eventColor) {
         this.eventColor = eventColor;
     }
 
@@ -269,7 +269,7 @@ public class Model {
         initializeAllPersonEvents();
         initializeAllChildren();
         if (settings == null) {
-            settings = new Settings();
+            settings = new MySettings();
         }
         if (filter == null) {
             filter = new MyFilter();
@@ -288,7 +288,7 @@ public class Model {
         for (int i = 0; i < eventsArray.size(); i++) {
             if (!eventColor.containsKey(eventsArray.get(i).getEventType().toLowerCase())) {
                 eventColor.put(eventsArray.get(i).getEventType().toLowerCase(),
-                        new MapColor(eventsArray.get(i).getEventType().toLowerCase()));
+                        new Colors(eventsArray.get(i).getEventType().toLowerCase()));
 
                 eventTypes.add(eventsArray.get(i).getEventType().toLowerCase());
             }

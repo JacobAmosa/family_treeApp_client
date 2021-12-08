@@ -33,8 +33,8 @@ public class RegisterTask extends AsyncTask<RegisterRequest, RegisterLoginResult
     @Override
     protected RegisterLoginResult doInBackground(RegisterRequest... registerRequests)
     {
-        ServerProxy serverProxy = ServerProxy.initialize();
-        RegisterLoginResult regResult = serverProxy.register(serverHost, ipAddress, registerRequests[0]);
+        ServerProxy serverProxy = ServerProxy.getInstance();
+        RegisterLoginResult regResult = serverProxy.registerUser(serverHost, ipAddress, registerRequests[0]);
         return regResult;
     }
 
