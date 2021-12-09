@@ -242,10 +242,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             createLinesForStory();
         }
         if (settings.isLineForSpouse()){
-            drawSpouseLines();
+            createLinesForSpouse();
         }
         if (settings.isLineForFamily()){
-            drawFamilyLines();
+            EventModel currEvent = markerToEvent.get(currentMarker);
+            PersonModel currPerson = data.getMyPeople().get(currEvent.getPersonID());
+            lineAid(currPerson, currEvent, 10);
         }
     }
 
@@ -287,100 +289,76 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    //--****************-- Draws Spouse Lines to earliest valid event --*****************--
-    private void drawSpouseLines()
-    {
-        EventModel currEvent = markerToEvent.get(currentMarker);
-        PersonModel currPerson = data.getMyPeople().get(currEvent.getPersonID());
-        List<EventModel> eventsList = data.getAllMyEvents().get(currPerson.getSpouseID());
-        eventsList = data.eventChronOrder(eventsList);
-        MyFilter filter = data.getMyFilter();
+    private void lineAid(PersonModel person, EventModel event, int num) {
+        if (person.getMotherID() != null){
+            List<EventModel> eventsList = data.getAllMyEvents().get(person.getMotherID());
+            eventsList = data.eventChronOrder(eventsList);
 
-        if (filter.doesContainEvent(currEvent.getEventType())) {
             for (int i = 0; i < eventsList.size(); i++) {
-                if (data.getShownEvents().containsValue(eventsList.get(i))) {
-                    EventModel spouseValidEvent = eventsList.get(i);
+                if (idToEvent.containsValue(eventsList.get(i))) {
+                    EventModel validEvent = eventsList.get(i);
 
                     Polyline newestLine = googleMap.addPolyline(new PolylineOptions()
-                            .add(new LatLng(spouseValidEvent.getLatitude(), spouseValidEvent.getLongitude()),
-                                    new LatLng(currEvent.getLatitude(), currEvent.getLongitude()))
-                            .color(data.getMySettings().getSpouseHue()));
+                            .add(new LatLng(event.getLatitude(), event.getLongitude()),
+                                    new LatLng(validEvent.getLatitude(), validEvent.getLongitude()))
+                            .color(data.getMySettings().getFamilyHue())
+                            .width(num));
                     lines.add(newestLine);
 
+                    PersonModel mother = data.getMyPeople().get(person.getMotherID());
+                    lineAid(mother, validEvent, num / 2);
+                    return;
+                }
+            }
+        }
+        if (person.getFatherID() != null) {
+            List<EventModel> listOfEvents = data.getAllMyEvents().get(person.getFatherID());
+            listOfEvents = data.eventChronOrder(listOfEvents);
+            for (int i = 0; i < listOfEvents.size(); i++) {
+                if (idToEvent.containsValue(listOfEvents.get(i))) {
+                    EventModel goodEvent = listOfEvents.get(i);
+                    Polyline newestLine = googleMap.addPolyline(new PolylineOptions()
+                            .add(new LatLng(event.getLatitude(), event.getLongitude()),
+                                    new LatLng(goodEvent.getLatitude(), goodEvent.getLongitude()))
+                            .color(data.getMySettings().getFamilyHue())
+                            .width(num));
+                    lines.add(newestLine);
+                    PersonModel father = data.getMyPeople().get(person.getFatherID());
+                    lineAid(father, goodEvent, num / 2);
                     return;
                 }
             }
         }
     }
 
-    //--****************-- Starts the family Lines Recursion --*****************--
-    private void drawFamilyLines()
-    {
-        EventModel currEvent = markerToEvent.get(currentMarker);
-        PersonModel currPerson = data.getMyPeople().get(currEvent.getPersonID());
-
-        familyLineHelper(currPerson, currEvent, 10);
+    private void createLinesForSpouse() {
+        EventModel eventModel = markerToEvent.get(currentMarker);
+        assert eventModel != null;
+        PersonModel personModel = data.getMyPeople().get(eventModel.getPersonID());
+        assert personModel != null;
+        List<EventModel> listOfEvents = data.getAllMyEvents().get(personModel.getSpouseID());
+        listOfEvents = data.eventChronOrder(listOfEvents);
+        MyFilter filter = data.getMyFilter();
+        createLinesForSpouseTwo(filter, eventModel, listOfEvents);
     }
 
-    //--****************-- Splits the two paths up the family tree --*****************--
-    private void familyLineHelper(PersonModel currPerson, EventModel focusedEvent, int generation)
-    {
-        if (currPerson.getFatherID() != null) {
-            familyLineHelperFather(currPerson, focusedEvent, generation);
-        }
-        if (currPerson.getMotherID() != null){
-            familyLineHelperMother(currPerson, focusedEvent, generation);
-        }
-    }
-
-    //--****************-- Draws Lines to each valid person on the Father's Side --*****************--
-    private void familyLineHelperFather(PersonModel currPerson, EventModel focusedEvent, int generation)
-    {
-        List<EventModel> eventsList = data.getAllMyEvents().get(currPerson.getFatherID());
-        eventsList = data.eventChronOrder(eventsList);
-
-        for (int i = 0; i < eventsList.size(); i++) {
-            if (idToEvent.containsValue(eventsList.get(i))) {
-                EventModel validEvent = eventsList.get(i);
-
-                Polyline newestLine = googleMap.addPolyline(new PolylineOptions()
-                        .add(new LatLng(focusedEvent.getLatitude(), focusedEvent.getLongitude()),
-                                new LatLng(validEvent.getLatitude(), validEvent.getLongitude()))
-                        .color(data.getMySettings().getFamilyHue())
-                        .width(generation));
-                lines.add(newestLine);
-
-                PersonModel father = data.getMyPeople().get(currPerson.getFatherID());
-                familyLineHelper(father, validEvent, generation / 2);
-                return;
-            }
-        }
-
-    }
-
-    //--****************-- Draws Lines to each valid person on the Mother's Side --*****************--
-    private void familyLineHelperMother(PersonModel currPerson, EventModel focusedEvent, int generation)
-    {
-        List<EventModel> eventsList = data.getAllMyEvents().get(currPerson.getMotherID());
-        eventsList = data.eventChronOrder(eventsList);
-
-        for (int i = 0; i < eventsList.size(); i++) {
-            if (idToEvent.containsValue(eventsList.get(i))) {
-                EventModel validEvent = eventsList.get(i);
-
-                Polyline newestLine = googleMap.addPolyline(new PolylineOptions()
-                        .add(new LatLng(focusedEvent.getLatitude(), focusedEvent.getLongitude()),
-                                new LatLng(validEvent.getLatitude(), validEvent.getLongitude()))
-                        .color(data.getMySettings().getFamilyHue())
-                        .width(generation));
-                lines.add(newestLine);
-
-                PersonModel mother = data.getMyPeople().get(currPerson.getMotherID());
-                familyLineHelper(mother, validEvent, generation / 2);
-                return;
+    public void createLinesForSpouseTwo(MyFilter filter, EventModel eventModel, List<EventModel> listOfEvents){
+        if (filter.doesContainEvent(eventModel.getEventType())) {
+            for (int i = 0; i < listOfEvents.size(); i++) {
+                if (data.getShownEvents().containsValue(listOfEvents.get(i))) {
+                    EventModel goodEvents = listOfEvents.get(i);
+                    Polyline newestLine = googleMap.addPolyline(new PolylineOptions()
+                            .add(new LatLng(goodEvents.getLatitude(), goodEvents.getLongitude()),
+                                    new LatLng(eventModel.getLatitude(), eventModel.getLongitude()))
+                            .color(data.getMySettings().getSpouseHue()));
+                    lines.add(newestLine);
+                    return;
+                }
             }
         }
     }
+
+
 
 
 
