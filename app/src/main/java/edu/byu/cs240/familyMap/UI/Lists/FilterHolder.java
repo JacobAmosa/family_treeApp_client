@@ -1,5 +1,6 @@
 package edu.byu.cs240.familyMap.UI.Lists;
 
+import android.annotation.SuppressLint;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -10,68 +11,56 @@ import edu.byu.cs240.familyMap.Data.MyFilter;
 import edu.byu.cs240.familyMap.Data.DataCache;
 import edu.byu.cs240.familyMap.R;
 
-/** FilterHolder
- * FilterHolder contains all layout information for the filter Adapter in the Filter Activity
- */
 public class FilterHolder extends RecyclerView.ViewHolder {
 
-    private TextView mEventType;
-    private TextView mEventDescription;
-    private Switch mEventSwitch;
-    private MyFilter filter = DataCache.getInstance().getMyFilter();
+    private final TextView eventType;
+    private final TextView description;
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    private final Switch mySwitch;
+    private final MyFilter myFilter = DataCache.getInstance().getMyFilter();
 
-    // ========================== Constructor ========================================
-    public FilterHolder(View itemView)
-    {
-        super(itemView);
-
-        mEventType = itemView.findViewById(R.id.filter_setting);
-        mEventDescription = itemView.findViewById(R.id.filter_description);
-        mEventSwitch = itemView.findViewById(R.id.filter_switch);
+    public FilterHolder(View v) {
+        super(v);
+        mySwitch = v.findViewById(R.id.filter_switch);
+        eventType = v.findViewById(R.id.filter_setting);
+        description = v.findViewById(R.id.filter_description);
     }
 
     public Switch getSwitch()
     {
-        return mEventSwitch;
+        return mySwitch;
     }
 
-    //--****************-- Binds Event Types in the Filter Menu --***************--
-    public void bind(String eventType)
-    {
-        String eventTypeText = eventType + " Events";
-        String eventDescription = "filter by " + eventType + " events";
-
-        mEventSwitch.setChecked(filter.doesContainEvent(eventType));
-        mEventType.setText(eventTypeText);
-        mEventDescription.setText(eventDescription.toUpperCase());
+    public void configure(String types) {
+        String eventDescription = "filter by " + types + " events";
+        String eventTypeText = types + " Events";
+        mySwitch.setChecked(myFilter.doesContainEvent(types));
+        this.eventType.setText(eventTypeText);
+        description.setText(eventDescription.toUpperCase());
     }
 
-    //--****************-- Binds Defaults in the Filter menu --***************--
-    public void bindDefaults(String defaultText, int index)
-    {
+    public void configureDefault(String text, int num) {
         String defaultDescription;
         boolean isChecked;
-
-        if(index == 0){
-            defaultDescription = "filter by father's side of family";
-            isChecked = filter.isPaternal();
+        if(num == 0){
+            defaultDescription = "Paternal filter";
+            isChecked = myFilter.isPaternal();
         }
-        else if (index == 1){
-            defaultDescription = "filter by mother's side of family";
-            isChecked = filter.isMaternal();
+        else if (num == 1){
+            defaultDescription = "Maternal filter";
+            isChecked = myFilter.isMaternal();
         }
-        else if (index == 2) {
-            defaultDescription = "filter events based on gender";
-            isChecked = filter.isBoy();
+        else if (num == 2) {
+            defaultDescription = "Event gender filter";
+            isChecked = myFilter.isBoy();
         }
         else {
-            defaultDescription = "filter events based on gender";
-            isChecked = filter.isGirl();
+            defaultDescription = "Event gender filter";
+            isChecked = myFilter.isGirl();
         }
-
-        mEventType.setText(defaultText);
-        mEventDescription.setText(defaultDescription);
-        mEventSwitch.setChecked(isChecked);
+        eventType.setText(text);
+        description.setText(defaultDescription);
+        mySwitch.setChecked(isChecked);
     }
 
 }

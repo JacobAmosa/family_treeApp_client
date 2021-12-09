@@ -5,8 +5,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -15,93 +15,62 @@ import edu.byu.cs240.familyMap.Data.MyFilter;
 import edu.byu.cs240.familyMap.Data.DataCache;
 import edu.byu.cs240.familyMap.R;
 
-/** FilterRecyclerAdapter
- * Contains the Adapter information for the Filter Activity Recycler View
- */
+
 public class FilterRecycleAdapter extends RecyclerView.Adapter<FilterHolder> {
+    private final MyFilter filter = DataCache.getInstance().getMyFilter();
+    private final List<String> types;
+    private final LayoutInflater layout;
 
-    private List<String> eventTypesList;
-    private LayoutInflater inflater;
-
-    private MyFilter filter = DataCache.getInstance().getMyFilter();
-
-    // ========================== Constructor ========================================
-    public FilterRecycleAdapter(List<String> newEventTypes, Context context)
-    {
-        eventTypesList = newEventTypes;
-        inflater = LayoutInflater.from(context);
+    public FilterRecycleAdapter(List<String> types, Context context) {
+        layout = LayoutInflater.from(context);
+        this.types = types;
     }
 
-    //--****************-- Creates the View Holder --***************--
-    @Override
-    public FilterHolder onCreateViewHolder (ViewGroup viewGroup, final int i)
-    {
-        View filterView = inflater.inflate(R.layout.list_item_filter, viewGroup, false);
-        return new FilterHolder (filterView);
+    private void eventFilterHandler(int num, boolean picked) {
+        if (filter.doesContainEvent(types.get(num)) && !picked){
+            filter.removeType(types.get(num));
+        }
+        else if (!filter.doesContainEvent((types.get(num)))){
+            filter.addMyEvent(types.get(num));
+        }
     }
 
-    //--****************-- Binds the View Holder to a FilterHolder --***************--
+    @NonNull
     @Override
-    public void onBindViewHolder(final FilterHolder filterHolder, @SuppressLint("RecyclerView") final int i)
-    {
-        final String currEventType = eventTypesList.get(i);
+    public FilterHolder onCreateViewHolder (@NonNull ViewGroup group, final int i) {
+        View view = layout.inflate(R.layout.list_item_filter, group, false);
+        return new FilterHolder (view);
+    }
 
-        if (i <= 3){
-            filterHolder.getSwitch().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-                {
-                    defaultFilterClicked(i, isChecked);
-                }
-            });
-            filterHolder.bindDefaults(currEventType, i);
+    @Override
+    public void onBindViewHolder(@NonNull final FilterHolder holder, @SuppressLint("RecyclerView") final int num) {
+        final String eventTypes = this.types.get(num);
+        if (num <= 3){
+            holder.getSwitch().setOnCheckedChangeListener((buttonView, isChecked) -> clickedFilter(num, isChecked));
+            holder.configureDefault(eventTypes, num);
         }
         else {
-            filterHolder.getSwitch().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-                {
-                    eventFilterClicked(i, isChecked);
-                }
-            });
-            filterHolder.bind(currEventType);
+            holder.getSwitch().setOnCheckedChangeListener((buttonView, isChecked) -> eventFilterHandler(num, isChecked));
+            holder.configure(eventTypes);
         }
     }
 
-    //--****************-- Gets size of items --***************--
     @Override
     public int getItemCount()
     {
-        return eventTypesList.size();
+        return types.size();
     }
 
-    //--****************-- Default Filters onClick Function --***************--
-    private void defaultFilterClicked(int index, boolean isChecked)
-    {
-        switch (index){
-            case 0:
-                filter.setPaternal(isChecked);
-                break;
-            case 1:
-                filter.setMaternal(isChecked);
-                break;
-            case 2:
-                filter.setBoy(isChecked);
-                break;
-            case 3:
-                filter.setGirl(isChecked);
-                break;
+    private void clickedFilter(int num, boolean picked) {
+        if (num == 0){
+            filter.setPaternal(picked);
+        }else if(num == 1){
+            filter.setMaternal(picked);
+        }else if (num == 2){
+            filter.setBoy(picked);
+        }else if (num == 3){
+            filter.setGirl(picked);
         }
     }
 
-    //--****************-- Event Type Filters onClick Function --***************--
-    private void eventFilterClicked(int index, boolean isChecked)
-    {
-        if (filter.doesContainEvent(eventTypesList.get(index)) && !isChecked){
-            filter.removeType(eventTypesList.get(index));
-        }
-        else if (!filter.doesContainEvent((eventTypesList.get(index)))){
-            filter.addMyEvent(eventTypesList.get(index));
-        }
-    }
 }

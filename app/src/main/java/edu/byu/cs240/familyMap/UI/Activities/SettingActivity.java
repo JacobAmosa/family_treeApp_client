@@ -94,7 +94,6 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
                         break;
                 }
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent)
             {}
