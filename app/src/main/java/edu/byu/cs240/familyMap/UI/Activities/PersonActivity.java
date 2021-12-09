@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import edu.byu.cs240.familyMap.Data.DataCache;
 import edu.byu.cs240.familyMap.R;
@@ -20,97 +21,21 @@ import edu.byu.cs240.familyMap.UI.Lists.PersonActivityListAdapter;
 import shared.EventModel;
 import shared.PersonModel;
 
-/** PersonActivity
- * Contains all information regarding the Person Activity
- */
 public class PersonActivity extends AppCompatActivity {
+    private final DataCache dataCache = DataCache.getInstance();
+    private ExpandableListAdapter adapter;
+    private ExpandableListView myView;
+    private PersonModel personModel;
 
-    private PersonModel currPerson;
-
-    private TextView mFirstName;
-    private TextView mLastName;
-    private TextView mGender;
-
-    private ExpandableListView mListView;
-    private ExpandableListAdapter mListAdapter;
-
-    private DataCache dataCache = DataCache.getInstance();
-
-    //________________________ onCreate and other Activity functions ____________________________________
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("FamilyMap: Person Details");
-
-        currPerson = dataCache.getClickedPerson();
-        mFirstName = findViewById(R.id.person_first_name);
-        mLastName = findViewById(R.id.person_last_name);
-        mGender = findViewById(R.id.person_gender);
-
-        mFirstName.setText(currPerson.getFirstName());
-        mLastName.setText(currPerson.getLastName());
-        mGender.setText(currPerson.getGender().toUpperCase());
-
-        mListView = findViewById(R.id.expandable_list_person_activity);
-
-        mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id)
-            {
-                if (groupPosition == 0){
-                    Intent intent = new Intent(PersonActivity.this, EventActivity.class);
-                    intent.putExtra("Event", "Event");
-                    dataCache.setClickedEvent((EventModel) mListAdapter.getChild(groupPosition, childPosition));
-                    startActivity(intent);
-                }
-                else {
-                    Intent intent = new Intent(PersonActivity.this, PersonActivity.class);
-                    dataCache.setClickedPerson((PersonModel) mListAdapter.getChild(groupPosition, childPosition));
-                    startActivity(intent);
-                }
-                return false;
-            }
-        });
-
-        updateUI();
-    }
-
-    //--****************-- Initialize the PersonActivity Adapter --***************--
-    private void updateUI()
-    {
-        List<PersonModel> relatives = new ArrayList<>(dataCache.getFamily(currPerson.getId()));
-
-        List<EventModel> eventsArrayList = new ArrayList<>(dataCache.getAllMyEvents().get(currPerson.getId()));
-        eventsArrayList = dataCache.eventChronOrder(eventsArrayList);
-
-        List<String> headers = new ArrayList<>();
-        headers.add("Events");
-        headers.add("Relatives");
-
-        eventsArrayList = filterEvents(eventsArrayList);
-        relatives = filterPersons(relatives);
-
-        mListAdapter = new PersonActivityListAdapter(this, headers, eventsArrayList, relatives, currPerson);
-        mListView.setAdapter(mListAdapter);
-    }
-
-    //--****************-- Overriding the up Button --***************--
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        configureTextViews();
+        configureExpandableList();
+        changeView();
     }
 
     public boolean onCreateOptionsMenu(Menu menu)
@@ -118,28 +43,79 @@ public class PersonActivity extends AppCompatActivity {
         return true;
     }
 
-    //--****************-- Filter Event based on Filters --***************--
-    private List<EventModel> filterEvents(List<EventModel> eventsList)
-    {
-        List<EventModel> testEventList = new ArrayList<>();
-        for (EventModel currEvent: eventsList) {
-            if (dataCache.getShownEvents().containsValue(currEvent)){
-                testEventList.add(currEvent);
-            }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menu) {
+        if (menu.getItemId() == android.R.id.home) {
+            Intent myIntent = new Intent(this, MainActivity.class);
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(myIntent);
+            return true;
         }
-        return testEventList;
+        return super.onOptionsItemSelected(menu);
     }
 
-    //--****************-- Filter People based on Filters --***************--
-    private List<PersonModel> filterPersons(List<PersonModel> personsList)
-    {
-        List<PersonModel> filteredPersonsList = new ArrayList<>();
+    public void configureTextViews(){
+        personModel = dataCache.getClickedPerson();
+        TextView firstName = findViewById(R.id.person_first_name);
+        firstName.setText(personModel.getFirstName());
+        TextView lastName = findViewById(R.id.person_last_name);
+        lastName.setText(personModel.getLastName());
+        TextView gender = findViewById(R.id.person_gender);
+        gender.setText(personModel.getGender().toUpperCase());
+    }
 
-        for (PersonModel person: personsList) {
-            if (dataCache.personShown(person)){
-                filteredPersonsList.add(person);
+    public void configureExpandableList(){
+        myView = findViewById(R.id.expandable_list_person_activity);
+        myView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupNum, int childNum, long id) {
+                if (groupNum == 0){
+                    startEvent(groupNum, childNum);
+                }else{
+                    startPerson(groupNum, childNum);
+                }
+                return false;
+            }
+        });
+    }
+
+    private void startEvent(int groupNum, int childNum){
+        Intent myIntent = new Intent(PersonActivity.this, EventActivity.class);
+        myIntent.putExtra("Event", "Event");
+        dataCache.setClickedEvent((EventModel) adapter.getChild(groupNum, childNum));
+        startActivity(myIntent);
+    }
+
+    private void startPerson(int groupNum, int childNum){
+        Intent myIntent = new Intent(PersonActivity.this, PersonActivity.class);
+        dataCache.setClickedPerson((PersonModel) adapter.getChild(groupNum, childNum));
+        startActivity(myIntent);
+    }
+
+    private void changeView() {
+        List<PersonModel> peopleFilter = new ArrayList<>();
+        List<EventModel> eventTest = new ArrayList<>();
+        List<PersonModel> extendedFamily = new ArrayList<>(dataCache.getFamily(personModel.getId()));
+        List<EventModel> eventList = new ArrayList<>(Objects.requireNonNull(dataCache.getAllMyEvents().get(personModel.getId())));
+        eventList = dataCache.eventChronOrder(eventList);
+        for (PersonModel p: extendedFamily) {
+            if (dataCache.personShown(p)){
+                peopleFilter.add(p);
             }
         }
-        return filteredPersonsList;
+        extendedFamily = peopleFilter;
+        for (EventModel e: eventList) {
+            if (dataCache.getShownEvents().containsValue(e)){
+                eventTest.add(e);
+            }
+        }
+        eventList = eventTest;
+        List<String> headers = new ArrayList<>();
+        headers.add("Events");
+        headers.add("Relatives");
+        adapter = new PersonActivityListAdapter(this, headers, eventList, extendedFamily, personModel);
+        myView.setAdapter(adapter);
     }
+
+
 }
