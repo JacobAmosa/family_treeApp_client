@@ -10,7 +10,7 @@ import shared.*;
  * The RegisterTask extends AsyncTask and is used to check validity of a register Request,
  * and then pulls information from server using a DataTask
  */
-public class RegisterTask extends AsyncTask<RegisterRequest, RegisterLoginResult, RegisterLoginResult> implements DataTask.DataContext {
+public class RegisterTask extends AsyncTask<RegisterRequest, RegisterLoginResult, RegisterLoginResult> implements DataTask.taskData {
 
     private String serverHost;
     private String ipAddress;
@@ -54,8 +54,8 @@ public class RegisterTask extends AsyncTask<RegisterRequest, RegisterLoginResult
 
     //--****************-- Completion from DataTask --***************--
     @Override
-    public void onExecuteCompleteData(String message)
+    public void onExecuteCompleteData(String note)
     {
-        context.onExecuteComplete(message);
+        context.onExecuteComplete(note);
     }
 }

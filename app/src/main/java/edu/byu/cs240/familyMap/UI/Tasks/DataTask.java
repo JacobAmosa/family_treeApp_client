@@ -13,97 +13,72 @@ import shared.EventResult;
 import shared.PersonModel;
 import shared.PersonResult;
 
-/** DataTask
- * DataTask extends the AsyncTask and reaches the server to extract all information regarding user
- * after successful login or register
- */
 public class DataTask extends AsyncTask<String, Boolean, Boolean> {
+    private final DataCache dataCache = DataCache.getInstance();
+    private final String host;
+    private final String ip;
+    private final taskData dataCon;
 
-    private String serverHost;
-    private String ipAddress;
-    private DataContext context;
-    private DataCache dataCache = DataCache.getInstance();
-
-    ///////// Interface //////////
-    public interface DataContext {
-        void onExecuteCompleteData(String message);
+    public DataTask(String server, String ip, taskData data){
+        this.ip = ip;
+        this.dataCon = data;
+        this.host = server;
     }
 
-    // ========================== Constructor ========================================
-    public DataTask(String server, String ip, DataTask.DataContext c)
-    {
-        serverHost = server;
-        ipAddress = ip;
-        context = c;
+    public interface taskData {
+        void onExecuteCompleteData(String note);
     }
 
-    //--****************-- Do In Background --***************--
     @Override
-    protected Boolean doInBackground(String... authToken)
-    {
-        ServerProxy serverProxy = ServerProxy.getInstance();
-        PersonResult allPersonResults = serverProxy.getPeople(serverHost, ipAddress, authToken[0]);
-        EventResult allEventResults = serverProxy.getEvents(serverHost, ipAddress, authToken[0]);
-
-        Boolean bool = sendDataToModel(allPersonResults, allEventResults);
-        return bool;
+    protected Boolean doInBackground(String... info){
+        ServerProxy proxy = ServerProxy.getInstance();
+        EventResult events = proxy.getEvents(host, ip, info[0]);
+        PersonResult people = proxy.getPeople(host, ip, info[0]);
+        return dataTransporter(people, events);
     }
 
-    //--****************-- On Post Execute --***************--
     @Override
-    protected void onPostExecute(Boolean bool) {
-        if (bool){
-            PersonModel user = dataCache.getUsers();
-            String message = "Welcome, " + user.getFirstName() + " " + user.getLastName();
-            context.onExecuteCompleteData(message);
+    protected void onPostExecute(Boolean good) {
+        if (good){
+            PersonModel myUser = dataCache.getUsers();
+            dataCon.onExecuteCompleteData("Welcome, " + myUser.getFirstName() + " " + myUser.getLastName());
             dataCache.initializeAllData();
-        }
-        else {
-            context.onExecuteCompleteData("Error occurred with user data");
+        }else {
+            dataCon.onExecuteCompleteData("User data error.");
         }
     }
 
-    //_______________________________ Data Initialization __________________________________________
-    private boolean sendDataToModel(PersonResult allPersonResults, EventResult allEventResults)
-    {
-        return (initializeAllEvents(allEventResults) && initializeAllPeople(allPersonResults));
-    }
-
-    //--****************-- Initializing People --***************--
-    private boolean initializeAllPeople(PersonResult allPersonResults)
-    {
-        if (allPersonResults.isSuccess()){
-            Map<String, PersonModel> personsMap = new HashMap<String, PersonModel>();
-            ArrayList<PersonModel> personArray = allPersonResults.getPersons();
-            dataCache.setUsers(personArray.get(0));
-
-            for(int i = 0; i < personArray.size(); i++){
-                String personID = personArray.get(i).getId();
-                personsMap.put(personID, personArray.get(i));
+    private boolean configurePeople(PersonResult people){
+        ArrayList<PersonModel> myArray = people.getPersons();
+        Map<String, PersonModel> myMap = new HashMap<String, PersonModel>();
+        dataCache.setUsers(myArray.get(0));
+        if (people.isSuccess()){
+            for(int i = 0; i < myArray.size(); i++){
+                String id = myArray.get(i).getId();
+                myMap.put(id, myArray.get(i));
             }
-
-            dataCache.setMyPeople(personsMap);
+            dataCache.setMyPeople(myMap);
             return true;
         }
         return false;
     }
 
-    //--****************-- Initializing Events --***************--
-    private boolean initializeAllEvents(EventResult allEventResults)
-    {
-        if (allEventResults.isSuccess()){
-            Map<String, EventModel> eventsMap = new HashMap<String, EventModel>();
-            ArrayList<EventModel> eventsArray = allEventResults.getEvents();
-
+    private boolean configureEvents(EventResult events){
+        ArrayList<EventModel> eventsArray = events.getEvents();
+        Map<String, EventModel> eventsMap = new HashMap<String, EventModel>();
+        if (events.isSuccess()){
             for(int i = 0; i < eventsArray.size(); i++){
-                String eventID = eventsArray.get(i).getEventID();
-                eventsMap.put(eventID, eventsArray.get(i));
+                String id = eventsArray.get(i).getEventID();
+                eventsMap.put(id, eventsArray.get(i));
             }
-
             dataCache.setMyEvents(eventsMap);
             return true;
         }
         return false;
+    }
+
+    private boolean dataTransporter(PersonResult people, EventResult events){
+        return (configureEvents(events) && configurePeople(people));
     }
 
 }

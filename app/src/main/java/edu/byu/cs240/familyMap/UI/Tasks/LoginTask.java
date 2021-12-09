@@ -10,7 +10,7 @@ import shared.*;
  * The LoginTask extends the AsyncTask and is used to check if the login or register request is valid
  * and then uses a DataTask to extract data
  */
-public class LoginTask extends AsyncTask<LoginRequest, RegisterLoginResult, RegisterLoginResult> implements DataTask.DataContext {
+public class LoginTask extends AsyncTask<LoginRequest, RegisterLoginResult, RegisterLoginResult> implements DataTask.taskData {
     private String serverHost;
     private String ipAddress;
     private LoginContext context;
@@ -58,9 +58,9 @@ public class LoginTask extends AsyncTask<LoginRequest, RegisterLoginResult, Regi
 
     //--****************-- Receive Completion from DataTask --***************--
     @Override
-    public void onExecuteCompleteData(String message)
+    public void onExecuteCompleteData(String note)
     {
-        context.onExecuteComplete(message);
+        context.onExecuteComplete(note);
     }
 
 

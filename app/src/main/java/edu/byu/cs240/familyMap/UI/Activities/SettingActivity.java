@@ -22,7 +22,7 @@ import edu.byu.cs240.familyMap.R;
 import edu.byu.cs240.familyMap.UI.Tasks.DataTask;
 
 
-public class SettingActivity extends AppCompatActivity implements DataTask.DataContext {
+public class SettingActivity extends AppCompatActivity implements DataTask.taskData {
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private final DataCache dataCache = DataCache.getInstance();
@@ -201,10 +201,10 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
     }
 
     @Override
-    public void onExecuteCompleteData(String message) {
+    public void onExecuteCompleteData(String note) {
         Intent myIntent = new Intent(this, MainActivity.class);
         Bundle myBundle = new Bundle();
-        if (message.equals("Welcome, " + dataCache.getUsers().getFirstName() + " " + dataCache.getUsers().getLastName())){
+        if (note.equals("Welcome, " + dataCache.getUsers().getFirstName() + " " + dataCache.getUsers().getLastName())){
             myBundle.putInt("Re-sync", 1);
             myIntent.putExtras(myBundle);
             myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
