@@ -18,7 +18,7 @@ import edu.byu.cs240.familyMap.R;
 import edu.byu.cs240.familyMap.UI.Tasks.LoginTask;
 import edu.byu.cs240.familyMap.UI.Tasks.RegisterTask;
 
-public class LoginFragment extends Fragment implements LoginTask.LoginContext, RegisterTask.RegisterContext {
+public class taskLoginFragment extends Fragment implements LoginTask.taskLogin, RegisterTask.RegisterContext {
 
     private LoginFragmentListener loginFragmentListener;
     private final RegisterRequest regReq = new RegisterRequest();;
@@ -94,7 +94,7 @@ public class LoginFragment extends Fragment implements LoginTask.LoginContext, R
                 logReq.setUsername(username.getText().toString());
                 LoginTask loginTask = new LoginTask(host.getText().toString(),
                         ip.getText().toString(),
-                        LoginFragment.this);
+                        taskLoginFragment.this);
                 loginTask.execute(logReq);
             }
         });
@@ -108,7 +108,7 @@ public class LoginFragment extends Fragment implements LoginTask.LoginContext, R
                 regReq.setFirstName(fName.getText().toString());
                 RegisterTask regTask = new RegisterTask(host.getText().toString(),
                         ip.getText().toString(),
-                        LoginFragment.this);
+                        taskLoginFragment.this);
                 regTask.execute(regReq);
             }
         });

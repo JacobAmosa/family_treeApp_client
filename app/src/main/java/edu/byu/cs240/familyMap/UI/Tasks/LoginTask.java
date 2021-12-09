@@ -6,61 +6,44 @@ import edu.byu.cs240.familyMap.Data.DataCache;
 import edu.byu.cs240.familyMap.Data.Request.LoginRequest;
 import edu.byu.cs240.familyMap.Server.ServerProxy;
 import shared.*;
-/** LoginTask
- * The LoginTask extends the AsyncTask and is used to check if the login or register request is valid
- * and then uses a DataTask to extract data
- */
-public class LoginTask extends AsyncTask<LoginRequest, RegisterLoginResult, RegisterLoginResult> implements DataTask.taskData {
-    private String serverHost;
-    private String ipAddress;
-    private LoginContext context;
 
-    ///////// Interface //////////
-    public interface LoginContext {
+public class LoginTask extends AsyncTask<LoginRequest, RegisterLoginResult, RegisterLoginResult> implements DataTask.taskData {
+    private final taskLogin context;
+    private final String host;
+    private final String ip;
+
+
+    public interface taskLogin {
         void onExecuteComplete(String message);
     }
 
-    // ========================== Constructor ========================================
-    public LoginTask(String server, String ip, LoginContext c)
-    {
-        serverHost = server;
-        ipAddress = ip;
-        context = c;
+    public LoginTask(String server, String ip, taskLogin login){
+        this.context = login;
+        this.host = server;
+        this.ip = ip;
     }
 
-    //--****************-- Do In Background --***************--
     @Override
-    protected RegisterLoginResult doInBackground(LoginRequest... logReqs)
-    {
-        ServerProxy serverProxy = ServerProxy.getInstance();
-        RegisterLoginResult loginResult = serverProxy.loginUser(serverHost, ipAddress, logReqs[0]);
-        return loginResult;
-    }
+    public void onExecuteCompleteData(String note){ context.onExecuteComplete(note);}
 
-    //--****************-- On Post Execute --***************--
     @Override
-    protected void onPostExecute(RegisterLoginResult loginResult)
-    {
-        if (loginResult.isSuccess()){
-            DataCache dataCache = DataCache.getInstance();
-
-            dataCache.setHost(serverHost);
-            dataCache.setIp(ipAddress);
-            dataCache.setAuthToken(loginResult.getAuthToken());
-
-            DataTask dataTask = new DataTask(serverHost, ipAddress, this);
-            dataTask.execute(loginResult.getAuthToken());
-        }
-        else {
-            context.onExecuteComplete(loginResult.getMessage());
+    protected void onPostExecute(RegisterLoginResult result){
+        DataCache dataCache = DataCache.getInstance();
+        if (result.isSuccess()){
+            dataCache.setIp(ip);
+            dataCache.setHost(host);
+            dataCache.setAuthToken(result.getAuthToken());
+            DataTask dataTask = new DataTask(host, ip, this);
+            dataTask.execute(result.getAuthToken());
+        }else {
+            context.onExecuteComplete(result.getMessage());
         }
     }
 
-    //--****************-- Receive Completion from DataTask --***************--
     @Override
-    public void onExecuteCompleteData(String note)
-    {
-        context.onExecuteComplete(note);
+    protected RegisterLoginResult doInBackground(LoginRequest... requests){
+        ServerProxy proxy = ServerProxy.getInstance();
+        return proxy.loginUser(host, ip, requests[0]);
     }
 
 
