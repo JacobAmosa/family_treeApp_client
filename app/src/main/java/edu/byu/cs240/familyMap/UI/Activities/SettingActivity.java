@@ -1,5 +1,6 @@
 package edu.byu.cs240.familyMap.UI.Activities;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
@@ -22,79 +23,84 @@ import edu.byu.cs240.familyMap.R;
 import edu.byu.cs240.familyMap.UI.Tasks.DataTask;
 
 
-/** SettingActivity
- * Contains all information for the Settings Activity, and Settings Recycler View
- */
 public class SettingActivity extends AppCompatActivity implements DataTask.DataContext {
 
-    private Switch mLifeStory;
-    private Switch mFamilyTree;
-    private Switch mSpouseLines;
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    private final DataCache dataCache = DataCache.getInstance();
+    private MySettings settings;
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    private Switch life;
 
-    private Spinner mLifeSpinner;
-    private Spinner mFamilySpinner;
-    private Spinner mSpouseSpinner;
-    private Spinner mMapSpinner;
-
-    private TextView mResync;
-    private TextView mLogout;
-
-    private MySettings currSettings;
-    private DataCache dataCache = DataCache.getInstance();
-
-    //______________________________________ onCreate and other Activity functions _________________________________________________
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         if (getSupportActionBar() != null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        mLifeStory = findViewById(R.id.life_switch);
-        mLifeStory.setChecked(dataCache.getMySettings().isLineForStory());
-        mFamilyTree = findViewById(R.id.tree_switch);
-        mFamilyTree.setChecked(dataCache.getMySettings().isLineForFamily());
-        mSpouseLines = findViewById(R.id.spouse_switch);
-        mSpouseLines.setChecked(dataCache.getMySettings().isLineForSpouse());
+        life = findViewById(R.id.life_switch);
+        life.setChecked(dataCache.getMySettings().isLineForStory());
+        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch tree = findViewById(R.id.tree_switch);
+        tree.setChecked(dataCache.getMySettings().isLineForFamily());
+        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch linesForSpouse = findViewById(R.id.spouse_switch);
+        linesForSpouse.setChecked(dataCache.getMySettings().isLineForSpouse());
+        configureLifeSpinner();
+        configureFamilySpinner();
+        configureSpouseSpinner();
+        configureMapSpinner();
+        TextView reSync = findViewById(R.id.resync_text);
+        reSync.setLinksClickable(true);
+        TextView logout = findViewById(R.id.logout_text);
+        logout.setLinksClickable(true);
+        configureListeners(tree, linesForSpouse, reSync, logout);
+    }
 
-        mLifeSpinner = findViewById(R.id.life_spinner);
-        mFamilySpinner = findViewById(R.id.tree_spinner);
-        mSpouseSpinner = findViewById(R.id.spouse_spinner);
-        mMapSpinner = findViewById(R.id.map_spinner);
+    public void configureListeners(@SuppressLint("UseSwitchCompatOrMaterialCode") Switch tree, @SuppressLint("UseSwitchCompatOrMaterialCode") Switch linesForSpouse, TextView reSync, TextView logout){
 
-        mResync = findViewById(R.id.resync_text);
-        mLogout = findViewById(R.id.logout_text);
+        linesForSpouse.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                dataCache.getMySettings().setLineForSpouse(isChecked);
+            }
+        });
+        tree.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                dataCache.getMySettings().setLineForFamily(isChecked);
+            }
+        });
+        reSync.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                settings = dataCache.getMySettings();
+                resyncApp();
+            }
+        });
+        life.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                dataCache.getMySettings().setLineForStory(isChecked);
+            }
+        });
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(getBaseContext(), MainActivity.class);
+                myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivityForResult(myIntent, 0);
+            }
+        });
+    }
 
-        mResync.setLinksClickable(true);
-        mLogout.setLinksClickable(true);
-
+    public void configureLifeSpinner(){
+        Spinner lifeSpin = findViewById(R.id.life_spinner);
         ArrayAdapter<CharSequence> storyColors = ArrayAdapter.createFromResource(this,
                 R.array.life_story_colors, R.layout.support_simple_spinner_dropdown_item);
-        mLifeSpinner.setAdapter(storyColors);
-
-        ArrayAdapter<CharSequence> spouseColors = ArrayAdapter.createFromResource(this,
-                R.array.spouse_line_color, R.layout.support_simple_spinner_dropdown_item);
-        mSpouseSpinner.setAdapter(spouseColors);
-
-        ArrayAdapter<CharSequence> familyTreeColors = ArrayAdapter.createFromResource(this,
-                R.array.family_tree_colors, R.layout.support_simple_spinner_dropdown_item);
-        mFamilySpinner.setAdapter(familyTreeColors);
-
-        ArrayAdapter<CharSequence> mapTypes = ArrayAdapter.createFromResource(this,
-                R.array.map_types, R.layout.support_simple_spinner_dropdown_item);
-        mMapSpinner.setAdapter(mapTypes);
-
-        mLifeSpinner.setSelection(dataCache.getMySettings().getSpinChoices(0));
-        mFamilySpinner.setSelection(dataCache.getMySettings().getSpinChoices(1));
-        mSpouseSpinner.setSelection(dataCache.getMySettings().getSpinChoices(2));
-        mMapSpinner.setSelection(dataCache.getMySettings().getSpinChoices(3));
-
-        //--****************************-- Spinner Listeners --*******************************--
-        mLifeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        lifeSpin.setSelection(dataCache.getMySettings().getSpinChoices(0));
+        lifeSpin.setAdapter(storyColors);
+        lifeSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-            {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
                         dataCache.getMySettings().setStoryHue(Color.BLUE);
@@ -115,7 +121,14 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
             public void onNothingSelected(AdapterView<?> parent)
             {}
         });
+    }
 
+    public  void configureFamilySpinner(){
+        Spinner mFamilySpinner = findViewById(R.id.tree_spinner);
+        ArrayAdapter<CharSequence> familyTreeColors = ArrayAdapter.createFromResource(this,
+                R.array.family_tree_colors, R.layout.support_simple_spinner_dropdown_item);
+        mFamilySpinner.setAdapter(familyTreeColors);
+        mFamilySpinner.setSelection(dataCache.getMySettings().getSpinChoices(1));
         mFamilySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
@@ -140,7 +153,14 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
             public void onNothingSelected(AdapterView<?> parent)
             {}
         });
+    }
 
+    public void configureSpouseSpinner(){
+        Spinner mSpouseSpinner = findViewById(R.id.spouse_spinner);
+        ArrayAdapter<CharSequence> spouseColors = ArrayAdapter.createFromResource(this,
+                R.array.spouse_line_color, R.layout.support_simple_spinner_dropdown_item);
+        mSpouseSpinner.setAdapter(spouseColors);
+        mSpouseSpinner.setSelection(dataCache.getMySettings().getSpinChoices(2));
         mSpouseSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
@@ -165,7 +185,14 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
             public void onNothingSelected(AdapterView<?> parent)
             {}
         });
+    }
 
+    public void configureMapSpinner(){
+        Spinner mMapSpinner = findViewById(R.id.map_spinner);
+        ArrayAdapter<CharSequence> mapTypes = ArrayAdapter.createFromResource(this,
+                R.array.map_types, R.layout.support_simple_spinner_dropdown_item);
+        mMapSpinner.setAdapter(mapTypes);
+        mMapSpinner.setSelection(dataCache.getMySettings().getSpinChoices(3));
         mMapSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
@@ -194,57 +221,10 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
             public void onNothingSelected(AdapterView<?> parent)
             {}
         });
-
-        //--****************************-- Switch Listeners --*******************************--
-        mLifeStory.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                dataCache.getMySettings().setLineForStory(isChecked);
-            }
-        });
-
-        mFamilyTree.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                dataCache.getMySettings().setLineForFamily(isChecked);
-            }
-        });
-
-        mSpouseLines.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                dataCache.getMySettings().setLineForSpouse(isChecked);
-            }
-        });
-
-        mResync.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-                currSettings = dataCache.getMySettings();
-                resyncApp();
-            }
-        });
-
-        mLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-                Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivityForResult(intent, 0);
-            }
-        });
-
     }
 
-    //--****************-- Overriding the up Button --***************--
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
@@ -272,7 +252,7 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
     {
         if (message.equals("Welcome, " + dataCache.getUsers().getFirstName() + " " + dataCache.getUsers().getLastName())){
             Toast.makeText(this,"Success in Re-sync", Toast.LENGTH_SHORT).show();
-            dataCache.setMySettings(currSettings);
+            dataCache.setMySettings(settings);
 
             Intent intent = new Intent(this, MainActivity.class);
             Bundle bundle = new Bundle();
