@@ -73,7 +73,7 @@ public class ConfigActivity extends AppCompatActivity implements DataSetterTask.
     public void configureLifeSpinner(){
         Spinner lifeSpin = findViewById(R.id.life_spinner);
         ArrayAdapter<CharSequence> storyColors = ArrayAdapter.createFromResource(this,
-                R.array.life_story_colors, R.layout.support_simple_spinner_dropdown_item);
+                R.array.color_life, R.layout.support_simple_spinner_dropdown_item);
         lifeSpin.setSelection(dataCache.getMySettings().getSpinChoices(0));
         lifeSpin.setAdapter(storyColors);
         lifeSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -103,7 +103,7 @@ public class ConfigActivity extends AppCompatActivity implements DataSetterTask.
     public  void configureFamilySpinner(){
         Spinner mFamilySpinner = findViewById(R.id.tree_spinner);
         ArrayAdapter<CharSequence> familyTreeColors = ArrayAdapter.createFromResource(this,
-                R.array.family_tree_colors, R.layout.support_simple_spinner_dropdown_item);
+                R.array.color_family, R.layout.support_simple_spinner_dropdown_item);
         mFamilySpinner.setAdapter(familyTreeColors);
         mFamilySpinner.setSelection(dataCache.getMySettings().getSpinChoices(1));
         mFamilySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -135,7 +135,7 @@ public class ConfigActivity extends AppCompatActivity implements DataSetterTask.
     public void configureSpouseSpinner(){
         Spinner mSpouseSpinner = findViewById(R.id.spouse_spinner);
         ArrayAdapter<CharSequence> spouseColors = ArrayAdapter.createFromResource(this,
-                R.array.spouse_line_color, R.layout.support_simple_spinner_dropdown_item);
+                R.array.color_spouse, R.layout.support_simple_spinner_dropdown_item);
         mSpouseSpinner.setAdapter(spouseColors);
         mSpouseSpinner.setSelection(dataCache.getMySettings().getSpinChoices(2));
         mSpouseSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -167,7 +167,7 @@ public class ConfigActivity extends AppCompatActivity implements DataSetterTask.
     public void configureMapSpinner(){
         Spinner mMapSpinner = findViewById(R.id.map_spinner);
         ArrayAdapter<CharSequence> mapTypes = ArrayAdapter.createFromResource(this,
-                R.array.map_types, R.layout.support_simple_spinner_dropdown_item);
+                R.array.type_map, R.layout.support_simple_spinner_dropdown_item);
         mMapSpinner.setAdapter(mapTypes);
         mMapSpinner.setSelection(dataCache.getMySettings().getSpinChoices(3));
         mMapSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

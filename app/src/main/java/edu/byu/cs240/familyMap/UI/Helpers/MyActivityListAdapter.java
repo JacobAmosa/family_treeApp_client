@@ -90,7 +90,7 @@ public class MyActivityListAdapter extends BaseExpandableListAdapter {
         if (convert == null) {
             LayoutInflater myInflate = (LayoutInflater) this.myContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convert = myInflate.inflate(R.layout.list_header_event, null);
+            convert = myInflate.inflate(R.layout.event_head, null);
         }
         TextView myHead = convert.findViewById(R.id.event_header);
         myHead.setText(title);

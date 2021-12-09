@@ -42,13 +42,13 @@ public class LoginHelperFragment extends Fragment implements MyLoginTask.taskLog
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_login, container, false);
         TextWatcher watcher = new Enabler();
-        ip = v.findViewById(R.id.portNumberInput);
-        host = v.findViewById(R.id.serverHostInput);
-        username = v.findViewById(R.id.usernameInput);
-        password = v.findViewById(R.id.passwordInput);
-        fName = v.findViewById(R.id.firstNameInput);
-        lName = v.findViewById(R.id.lastNameInput);
-        email = v.findViewById(R.id.emailInput);
+        ip = v.findViewById(R.id.port);
+        host = v.findViewById(R.id.server);
+        username = v.findViewById(R.id.username);
+        password = v.findViewById(R.id.password);
+        fName = v.findViewById(R.id.firstname);
+        lName = v.findViewById(R.id.lastname);
+        email = v.findViewById(R.id.email);
 
         ip.addTextChangedListener(watcher);
         host.addTextChangedListener(watcher);
@@ -63,7 +63,7 @@ public class LoginHelperFragment extends Fragment implements MyLoginTask.taskLog
     }
 
     public void setRadioButtons(View v){
-        Button boy = v.findViewById(R.id.maleButton);
+        Button boy = v.findViewById(R.id.male);
         boy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,7 +72,7 @@ public class LoginHelperFragment extends Fragment implements MyLoginTask.taskLog
             }
         });
 
-        Button girl = v.findViewById(R.id.femaleButton);
+        Button girl = v.findViewById(R.id.female);
         girl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,8 +83,8 @@ public class LoginHelperFragment extends Fragment implements MyLoginTask.taskLog
     }
 
     public void setRegisterAndLogin(View v){
-        loginButt = v.findViewById(R.id.loginButton);
-        registerButt = v.findViewById(R.id.registerButton);
+        loginButt = v.findViewById(R.id.myLogin);
+        registerButt = v.findViewById(R.id.myRegister);
         enabler();
 
         loginButt.setOnClickListener(new View.OnClickListener() {

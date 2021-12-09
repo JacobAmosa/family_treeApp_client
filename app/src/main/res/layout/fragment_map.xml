@@ -51,14 +51,14 @@
                         android:id="@+id/person_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/map_fragment_welcome"
+                        android:text="@string/welcome_message"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                     <TextView
                         android:id="@+id/event_details"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/map_fragment_default"
+                        android:text="@string/welcome_message_two"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:visibility="visible" />
 

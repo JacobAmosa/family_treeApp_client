@@ -24,7 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/filter_default"
+                android:text="@string/f_default"
                 android:textSize="20sp" />
 
             <TextView
@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/filter_default_des" />
+                android:text="@string/f_default_description" />
 
 
         </LinearLayout>
