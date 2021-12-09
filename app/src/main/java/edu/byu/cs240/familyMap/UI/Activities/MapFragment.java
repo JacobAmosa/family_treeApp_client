@@ -1,5 +1,6 @@
 package edu.byu.cs240.familyMap.UI.Activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -98,7 +99,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             markerRetrieval();
         }
         if (markerToEvent != null && currentMarker != null) {
-            drawLines();
+            createLines();
         }
     }
 
@@ -110,7 +111,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         onMapReady(googleMap);
         if (currentMarker == null) {
             if (!markerToEvent.containsValue(myMarks)) {
-                removeLines();
+                for (com.google.android.gms.maps.model.Polyline currLine : lines) {
+                    currLine.remove();
+                }
+                lines = new ArrayList<Polyline>();
             }
         }
         googleMap.setMapType(data.getMySettings().getMapType());
@@ -190,11 +194,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    //--****************************-- markerClicked --*******************************--
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void markerClicked(Marker marker)
     {
         EventModel currEvent = markerToEvent.get(marker);
+        assert currEvent != null;
         PersonModel currPerson = data.getMyPeople().get(currEvent.getPersonID());
+        assert currPerson != null;
         String newName = currPerson.getFirstName() + " " + currPerson.getLastName();
         String eventInfo = currEvent.getEventType() + ": " + currEvent.getCity() + ", " + currEvent.getCountry();
         String yearInfo = "(" + currEvent.getYear() + ")";
@@ -222,19 +228,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         currentMarker = marker;
         data.setClickedEvent(currEvent);
-        drawLines();
+        createLines();
     }
 
 
-    //______________________________________ Drawing Map Lines Functions _________________________________________________
-    private void drawLines()
-    {
+    private void createLines() {
         MySettings settings = DataCache.getInstance().getMySettings();
-
-        removeLines();
-
+        for (com.google.android.gms.maps.model.Polyline line : lines) {
+            line.remove();
+        }
+        lines = new ArrayList<Polyline>();
         if (settings.isLineForStory()){
-            drawStoryLines();
+            createLinesForStory();
         }
         if (settings.isLineForSpouse()){
             drawSpouseLines();
@@ -244,64 +249,41 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    //--****************-- Removes all Lines --*****************--
-    private void removeLines()
-    {
-        for (com.google.android.gms.maps.model.Polyline currLine : lines) {
-            currLine.remove();
-        }
-        lines = new ArrayList<Polyline>();
-    }
-
-    //--****************-- Start Drawing Story Lines --*****************--
-    private void drawStoryLines() {
-        DataCache dataCache = DataCache.getInstance();
-        EventModel currEvent = markerToEvent.get(currentMarker);
-        PersonModel currPerson = dataCache.getMyPeople().get(currEvent.getPersonID());
-        List<EventModel> eventsList = dataCache.getAllMyEvents().get(currPerson.getId());
-        eventsList = dataCache.eventChronOrder(eventsList);
-
-        if (!dataCache.getMyFilter().doesContainEvent(currEvent.getEventType())) {
-            return;
-        }
-
-        firstStoryLine(eventsList);
-    }
-
-    //--****************-- Finds first valid event --*****************--
-    private void firstStoryLine(List<EventModel> eventsList)
-    {
-        int i = 0;
-        while (i < eventsList.size() - 1) {
-            if (data.getShownEvents().containsValue(eventsList.get(i))) {
-                EventModel event = eventsList.get(i);
-                i++;
-
-                secondStoryLine(event, eventsList, i);
-            }
-            else {
-                i++;
-            }
-        }
-    }
-
-    //--****************-- finds Second valid event and draws line --*****************--
-    private void secondStoryLine(EventModel eventOne, List<EventModel> eventsList, int i)
-    {
-        while (i < eventsList.size()) {
-
-            if (data.getShownEvents().containsValue(eventsList.get(i))) {
-                EventModel eventTwo = eventsList.get(i);
-
-                Polyline newestLine = googleMap.addPolyline(new PolylineOptions()
-                        .add(new LatLng(eventOne.getLatitude(), eventOne.getLongitude()),
-                                new LatLng(eventTwo.getLatitude(), eventTwo.getLongitude()))
+    private void storyLineHelper(EventModel oneEvent, List<EventModel> listOfEvents, int num){
+        while (num < listOfEvents.size()) {
+            if (data.getShownEvents().containsValue(listOfEvents.get(num))) {
+                EventModel twoEvent = listOfEvents.get(num);
+                Polyline line = googleMap.addPolyline(new PolylineOptions()
+                        .add(new LatLng(oneEvent.getLatitude(), oneEvent.getLongitude()),
+                                new LatLng(twoEvent.getLatitude(), twoEvent.getLongitude()))
                         .color(data.getMySettings().getStoryHue()));
-                lines.add(newestLine);
-
+                lines.add(line);
                 return;
             }
-            i++;
+            num++;
+        }
+    }
+
+    private void createLinesForStory() {
+        DataCache data = DataCache.getInstance();
+        EventModel myEvent = markerToEvent.get(currentMarker);
+        assert myEvent != null;
+        PersonModel currPerson = data.getMyPeople().get(myEvent.getPersonID());
+        assert currPerson != null;
+        List<EventModel> listOfEvents = data.getAllMyEvents().get(currPerson.getId());
+        listOfEvents = data.eventChronOrder(listOfEvents);
+        if (!data.getMyFilter().doesContainEvent(myEvent.getEventType())) {
+            return;
+        }
+        int num = 0;
+        while (num < listOfEvents.size() - 1) {
+            if (data.getShownEvents().containsValue(listOfEvents.get(num))) {
+                EventModel event = listOfEvents.get(num);
+                num++;
+                storyLineHelper(event, listOfEvents, num);
+            }else {
+                num++;
+            }
         }
     }
 
