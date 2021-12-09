@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -57,38 +56,17 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
 
     public void configureListeners(@SuppressLint("UseSwitchCompatOrMaterialCode") Switch tree, @SuppressLint("UseSwitchCompatOrMaterialCode") Switch linesForSpouse, TextView reSync, TextView logout){
 
-        linesForSpouse.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                dataCache.getMySettings().setLineForSpouse(isChecked);
-            }
+        linesForSpouse.setOnCheckedChangeListener((buttonView, isChecked) -> dataCache.getMySettings().setLineForSpouse(isChecked));
+        tree.setOnCheckedChangeListener((buttonView, isChecked) -> dataCache.getMySettings().setLineForFamily(isChecked));
+        reSync.setOnClickListener(v -> {
+            settings = dataCache.getMySettings();
+            adjustApp();
         });
-        tree.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                dataCache.getMySettings().setLineForFamily(isChecked);
-            }
-        });
-        reSync.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                settings = dataCache.getMySettings();
-                resyncApp();
-            }
-        });
-        life.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                dataCache.getMySettings().setLineForStory(isChecked);
-            }
-        });
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent myIntent = new Intent(getBaseContext(), MainActivity.class);
-                myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivityForResult(myIntent, 0);
-            }
+        life.setOnCheckedChangeListener((buttonView, isChecked) -> dataCache.getMySettings().setLineForStory(isChecked));
+        logout.setOnClickListener(v -> {
+            Intent myIntent = new Intent(getBaseContext(), MainActivity.class);
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivityForResult(myIntent, 0);
         });
     }
 
@@ -224,13 +202,33 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
+    public void onExecuteCompleteData(String message) {
+        Intent myIntent = new Intent(this, MainActivity.class);
+        Bundle myBundle = new Bundle();
+        if (message.equals("Welcome, " + dataCache.getUsers().getFirstName() + " " + dataCache.getUsers().getLastName())){
+            myBundle.putInt("Re-sync", 1);
+            myIntent.putExtras(myBundle);
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+            Toast.makeText(this,"resync success", Toast.LENGTH_SHORT).show();
+            dataCache.setMySettings(settings);
+            startActivityForResult(myIntent, 0);
         }
+        else {
+            Toast.makeText(this, "resync fail",Toast.LENGTH_SHORT).show();
+        }
+    }
 
+    private void adjustApp() {
+        DataTask dataTask = new DataTask(dataCache.getHost(), dataCache.getIp(), this);
+        dataTask.execute(dataCache.getAuthToken());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -239,30 +237,4 @@ public class SettingActivity extends AppCompatActivity implements DataTask.DataC
         return true;
     }
 
-    //--****************-- Re-Sync Function --***************--
-    private void resyncApp()
-    {
-        DataTask dataTask = new DataTask(dataCache.getHost(), dataCache.getIp(), this);
-        dataTask.execute(dataCache.getAuthToken());
-    }
-
-    //--****************-- Re-sync Communication --***************--
-    @Override
-    public void onExecuteCompleteData(String message)
-    {
-        if (message.equals("Welcome, " + dataCache.getUsers().getFirstName() + " " + dataCache.getUsers().getLastName())){
-            Toast.makeText(this,"Success in Re-sync", Toast.LENGTH_SHORT).show();
-            dataCache.setMySettings(settings);
-
-            Intent intent = new Intent(this, MainActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putInt("Re-sync", 1);
-            intent.putExtras(bundle);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivityForResult(intent, 0);
-        }
-        else {
-            Toast.makeText(this, "Re-sync Failed",Toast.LENGTH_SHORT).show();
-        }
-    }
 }
