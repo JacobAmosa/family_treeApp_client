@@ -1,4 +1,4 @@
-package edu.byu.cs240.familyMap.UI.Lists;
+package edu.byu.cs240.familyMap.UI.Helpers;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -16,12 +16,12 @@ import edu.byu.cs240.familyMap.Data.DataCache;
 import edu.byu.cs240.familyMap.R;
 
 
-public class FilterRecycleAdapter extends RecyclerView.Adapter<FilterHolder> {
+public class MyRecyclerAdapter extends RecyclerView.Adapter<HoldHelper> {
     private final MyFilter filter = DataCache.getInstance().getMyFilter();
     private final List<String> types;
     private final LayoutInflater layout;
 
-    public FilterRecycleAdapter(List<String> types, Context context) {
+    public MyRecyclerAdapter(List<String> types, Context context) {
         layout = LayoutInflater.from(context);
         this.types = types;
     }
@@ -37,13 +37,13 @@ public class FilterRecycleAdapter extends RecyclerView.Adapter<FilterHolder> {
 
     @NonNull
     @Override
-    public FilterHolder onCreateViewHolder (@NonNull ViewGroup group, final int i) {
+    public HoldHelper onCreateViewHolder (@NonNull ViewGroup group, final int i) {
         View view = layout.inflate(R.layout.list_item_filter, group, false);
-        return new FilterHolder (view);
+        return new HoldHelper(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final FilterHolder holder, @SuppressLint("RecyclerView") final int num) {
+    public void onBindViewHolder(@NonNull final HoldHelper holder, @SuppressLint("RecyclerView") final int num) {
         final String eventTypes = this.types.get(num);
         if (num <= 3){
             holder.getSwitch().setOnCheckedChangeListener((buttonView, isChecked) -> clickedFilter(num, isChecked));

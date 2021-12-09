@@ -1,4 +1,4 @@
-package edu.byu.cs240.familyMap.UI.Activities;
+package edu.byu.cs240.familyMap.UI.MyActivities;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -15,8 +15,8 @@ import androidx.fragment.app.Fragment;
 import edu.byu.cs240.familyMap.Data.Request.LoginRequest;
 import edu.byu.cs240.familyMap.Data.Request.RegisterRequest;
 import edu.byu.cs240.familyMap.R;
-import edu.byu.cs240.familyMap.UI.Tasks.MyLoginTask;
-import edu.byu.cs240.familyMap.UI.Tasks.MyRegisterTask;
+import edu.byu.cs240.familyMap.UI.MyTasks.MyLoginTask;
+import edu.byu.cs240.familyMap.UI.MyTasks.MyRegisterTask;
 
 public class LoginHelperFragment extends Fragment implements MyLoginTask.taskLogin, MyRegisterTask.taskRegister {
 

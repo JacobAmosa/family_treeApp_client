@@ -1,4 +1,4 @@
-package edu.byu.cs240.familyMap.UI.Activities;
+package edu.byu.cs240.familyMap.UI.MyActivities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,7 +17,7 @@ import java.util.Objects;
 
 import edu.byu.cs240.familyMap.Data.DataCache;
 import edu.byu.cs240.familyMap.R;
-import edu.byu.cs240.familyMap.UI.Lists.PersonActivityListAdapter;
+import edu.byu.cs240.familyMap.UI.Helpers.MyActivityListAdapter;
 import shared.EventModel;
 import shared.PersonModel;
 
@@ -113,7 +113,7 @@ public class PersonActivity extends AppCompatActivity {
         List<String> headers = new ArrayList<>();
         headers.add("Events");
         headers.add("Relatives");
-        adapter = new PersonActivityListAdapter(this, headers, eventList, extendedFamily, personModel);
+        adapter = new MyActivityListAdapter(this, headers, eventList, extendedFamily, personModel);
         myView.setAdapter(adapter);
     }
 

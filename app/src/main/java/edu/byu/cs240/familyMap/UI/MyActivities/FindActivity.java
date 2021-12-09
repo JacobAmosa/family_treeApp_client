@@ -1,4 +1,4 @@
-package edu.byu.cs240.familyMap.UI.Activities;
+package edu.byu.cs240.familyMap.UI.MyActivities;
 
 import android.os.Bundle;
 
@@ -19,7 +19,7 @@ import java.util.Map;
 
 import edu.byu.cs240.familyMap.Data.DataCache;
 import edu.byu.cs240.familyMap.R;
-import edu.byu.cs240.familyMap.UI.Lists.SearchAdapter;
+import edu.byu.cs240.familyMap.UI.Helpers.FindHelper;
 import shared.EventModel;
 import shared.PersonModel;
 
@@ -100,7 +100,7 @@ public class FindActivity extends AppCompatActivity {
             }
         }
         if (myList.size() != 0) {
-            RecyclerView.Adapter myAdapter = new SearchAdapter(myList, this);
+            RecyclerView.Adapter myAdapter = new FindHelper(myList, this);
             recycler.setAdapter(myAdapter);
         }
     }

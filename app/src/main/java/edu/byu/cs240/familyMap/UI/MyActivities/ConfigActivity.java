@@ -1,4 +1,4 @@
-package edu.byu.cs240.familyMap.UI.Activities;
+package edu.byu.cs240.familyMap.UI.MyActivities;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -19,7 +19,7 @@ import com.google.android.gms.maps.GoogleMap;
 import edu.byu.cs240.familyMap.Data.DataCache;
 import edu.byu.cs240.familyMap.Data.MySettings;
 import edu.byu.cs240.familyMap.R;
-import edu.byu.cs240.familyMap.UI.Tasks.DataSetterTask;
+import edu.byu.cs240.familyMap.UI.MyTasks.DataSetterTask;
 
 
 public class ConfigActivity extends AppCompatActivity implements DataSetterTask.taskData {

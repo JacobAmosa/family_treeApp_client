@@ -20,25 +20,25 @@
         android:theme="@style/Theme.FamilyMap"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".UI.Activities.ConfigActivity"
+            android:name=".UI.MyActivities.ConfigActivity"
 
-            android:parentActivityName=".UI.Activities.MainActivity"/>
+            android:parentActivityName=".UI.MyActivities.MainActivity"/>
         <activity
-            android:name=".UI.Activities.FindActivity"
+            android:name=".UI.MyActivities.FindActivity"
 
-            android:parentActivityName=".UI.Activities.MainActivity"/>
+            android:parentActivityName=".UI.MyActivities.MainActivity"/>
         <activity
-            android:name=".UI.Activities.HelperActivity"
+            android:name=".UI.MyActivities.HelperActivity"
 
-            android:parentActivityName=".UI.Activities.MainActivity"/>
+            android:parentActivityName=".UI.MyActivities.MainActivity"/>
         <activity
-            android:name=".UI.Activities.EventActivity"
+            android:name=".UI.MyActivities.EventActivity"
 
-            android:parentActivityName=".UI.Activities.MainActivity"/>
+            android:parentActivityName=".UI.MyActivities.MainActivity"/>
         <activity
-            android:name=".UI.Activities.PersonActivity"
+            android:name=".UI.MyActivities.PersonActivity"
 
-            android:parentActivityName=".UI.Activities.MainActivity"/>
+            android:parentActivityName=".UI.MyActivities.MainActivity"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -52,7 +52,7 @@
             android:value="AIzaSyCI4Wu2DwJ8N043eeP0ZeV0mxqjXjejJ_I" />
 
         <activity
-            android:name=".UI.Activities.MainActivity"
+            android:name=".UI.MyActivities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

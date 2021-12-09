@@ -1,4 +1,4 @@
-package edu.byu.cs240.familyMap.UI.Lists;
+package edu.byu.cs240.familyMap.UI.Helpers;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -16,7 +16,7 @@ import edu.byu.cs240.familyMap.R;
 import shared.EventModel;
 import shared.PersonModel;
 
-public class PersonActivityListAdapter extends BaseExpandableListAdapter {
+public class MyActivityListAdapter extends BaseExpandableListAdapter {
     private final DataCache dataCache = DataCache.getInstance();
     private final Context myContext;
     private final List<String> headers;
@@ -26,8 +26,8 @@ public class PersonActivityListAdapter extends BaseExpandableListAdapter {
     private TextView lineOne;
     private TextView lineTwo;
 
-    public PersonActivityListAdapter(Context myContext, List<String> data, List<EventModel> events, List<PersonModel> people,
-                                     PersonModel person) {
+    public MyActivityListAdapter(Context myContext, List<String> data, List<EventModel> events, List<PersonModel> people,
+                                 PersonModel person) {
         this.myContext = myContext;
         this.headers = data;
         this.events = events;

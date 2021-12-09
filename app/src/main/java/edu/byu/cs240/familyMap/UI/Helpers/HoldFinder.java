@@ -1,4 +1,4 @@
-package edu.byu.cs240.familyMap.UI.Lists;
+package edu.byu.cs240.familyMap.UI.Helpers;
 
 import android.annotation.SuppressLint;
 import android.view.View;
@@ -13,14 +13,14 @@ import edu.byu.cs240.familyMap.R;
 import shared.EventModel;
 import shared.PersonModel;
 
-public class SearchHolder extends RecyclerView.ViewHolder {
+public class HoldFinder extends RecyclerView.ViewHolder {
     private View myView;
     private TextView description;
     private ImageView icon;
     private LinearLayout linearLayout;
     private TextView lineOne;
 
-    public SearchHolder(View myItem){
+    public HoldFinder(View myItem){
         super(myItem);
         configureItems(myItem);
     }

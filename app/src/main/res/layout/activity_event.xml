@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UI.Activities.MapFragment"
+    tools:context=".UI.MyActivities.MapFragment"
     android:id="@+id/map_fragment">
 
     <!--anything else we want... -->

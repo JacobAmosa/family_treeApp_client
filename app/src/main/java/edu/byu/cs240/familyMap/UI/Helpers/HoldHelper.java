@@ -1,4 +1,4 @@
-package edu.byu.cs240.familyMap.UI.Lists;
+package edu.byu.cs240.familyMap.UI.Helpers;
 
 import android.annotation.SuppressLint;
 import android.view.View;
@@ -11,7 +11,7 @@ import edu.byu.cs240.familyMap.Data.MyFilter;
 import edu.byu.cs240.familyMap.Data.DataCache;
 import edu.byu.cs240.familyMap.R;
 
-public class FilterHolder extends RecyclerView.ViewHolder {
+public class HoldHelper extends RecyclerView.ViewHolder {
 
     private final TextView eventType;
     private final TextView description;
@@ -19,7 +19,7 @@ public class FilterHolder extends RecyclerView.ViewHolder {
     private final Switch mySwitch;
     private final MyFilter myFilter = DataCache.getInstance().getMyFilter();
 
-    public FilterHolder(View v) {
+    public HoldHelper(View v) {
         super(v);
         mySwitch = v.findViewById(R.id.filter_switch);
         eventType = v.findViewById(R.id.filter_setting);

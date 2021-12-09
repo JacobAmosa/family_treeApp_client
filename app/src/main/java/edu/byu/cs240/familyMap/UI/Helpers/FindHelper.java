@@ -1,4 +1,4 @@
-package edu.byu.cs240.familyMap.UI.Lists;
+package edu.byu.cs240.familyMap.UI.Helpers;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,17 +13,17 @@ import java.util.List;
 
 import edu.byu.cs240.familyMap.Data.DataCache;
 import edu.byu.cs240.familyMap.R;
-import edu.byu.cs240.familyMap.UI.Activities.EventActivity;
-import edu.byu.cs240.familyMap.UI.Activities.PersonActivity;
+import edu.byu.cs240.familyMap.UI.MyActivities.EventActivity;
+import edu.byu.cs240.familyMap.UI.MyActivities.PersonActivity;
 import shared.EventModel;
 import shared.PersonModel;
 
-public class SearchAdapter extends RecyclerView.Adapter<SearchHolder> {
+public class FindHelper extends RecyclerView.Adapter<HoldFinder> {
     private final LayoutInflater myInflate;
     private final List<Object> objectList;
     private final Context myContext;
 
-    public SearchAdapter(List<Object> obj, Context myContext) {
+    public FindHelper(List<Object> obj, Context myContext) {
         this.myContext = myContext;
         this.objectList = obj;
         myInflate = LayoutInflater.from(myContext);
@@ -45,13 +45,13 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchHolder> {
 
     @NonNull
     @Override
-    public SearchHolder onCreateViewHolder(@NonNull ViewGroup group, int num){
+    public HoldFinder onCreateViewHolder(@NonNull ViewGroup group, int num){
         View myView = myInflate.inflate(R.layout.list_item_event, group, false);
-        return new SearchHolder(myView);
+        return new HoldFinder(myView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SearchHolder holder, int num) {
+    public void onBindViewHolder(@NonNull HoldFinder holder, int num) {
         final Object myObj = objectList.get(num);
         if (myObj instanceof PersonModel) {
             holder.getLinearLayout().setOnClickListener(v -> handlePerson((PersonModel) myObj));

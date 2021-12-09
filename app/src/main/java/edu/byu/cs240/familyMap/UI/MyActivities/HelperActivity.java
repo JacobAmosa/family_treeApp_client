@@ -1,4 +1,4 @@
-package edu.byu.cs240.familyMap.UI.Activities;
+package edu.byu.cs240.familyMap.UI.MyActivities;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,7 +13,7 @@ import java.util.List;
 
 import edu.byu.cs240.familyMap.Data.DataCache;
 import edu.byu.cs240.familyMap.R;
-import edu.byu.cs240.familyMap.UI.Lists.FilterRecycleAdapter;
+import edu.byu.cs240.familyMap.UI.Helpers.MyRecyclerAdapter;
 
 public class HelperActivity extends AppCompatActivity {
 
@@ -40,7 +40,7 @@ public class HelperActivity extends AppCompatActivity {
         filter.add("Events females");
         filter.add("Paternal");
         filter.add("Maternal");
-        FilterRecycleAdapter recycler = new FilterRecycleAdapter(filter, this);
+        MyRecyclerAdapter recycler = new MyRecyclerAdapter(filter, this);
         recyclerView.setAdapter(recycler);
     }
 

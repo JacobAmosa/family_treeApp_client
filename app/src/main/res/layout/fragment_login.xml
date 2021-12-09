@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UI.Activities.LoginHelperFragment"
+    tools:context=".UI.MyActivities.LoginHelperFragment"
     android:id="@+id/login_fragment">
 
     <LinearLayout
