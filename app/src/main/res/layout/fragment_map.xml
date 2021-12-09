@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".UI.MyActivities.MapFragment"
     android:id="@+id/map_fragment">
 
-    <!--anything else we want... -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,7 +15,7 @@
             android:id="@+id/map"
             class="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="500dp"
+            android:layout_height="528dp"
             android:layout_marginBottom="0dp"
             tools:context=".MapsActivity" />
 
@@ -29,17 +27,16 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                tools:ignore="UselessParent">
 
                 <ImageView
                     android:id="@+id/map_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_width="86dp"
+                    android:layout_height="119dp"
                     android:layout_marginStart="45dp"
-                    android:layout_marginLeft="45dp"
-                    android:layout_marginTop="-1dp"
-                    android:src="@android:drawable/sym_def_app_icon"
-                    tools:src="@android:drawable/sym_def_app_icon" />
+                    android:layout_marginTop="3dp"
+                    android:src="@drawable/android_logo" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -51,15 +48,13 @@
                         android:id="@+id/person_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/welcome_message"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                        android:text="@string/welcome_message" />
 
                     <TextView
                         android:id="@+id/event_details"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/welcome_message_two"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:visibility="visible" />
 
                     <TextView
