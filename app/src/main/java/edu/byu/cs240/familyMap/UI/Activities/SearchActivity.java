@@ -23,118 +23,86 @@ import edu.byu.cs240.familyMap.UI.Lists.SearchAdapter;
 import shared.EventModel;
 import shared.PersonModel;
 
-/** SearchActivity
- * Contains all information about the Search Activity, and initializes the Search Adapater
- */
 public class SearchActivity extends AppCompatActivity {
+    private final DataCache dataCache = DataCache.getInstance();
+    private String search;
+    private RecyclerView recycler;
 
-    private EditText mSearchBar;
-    private Button mSearchButton;
-    private String searchInput;
-    private RecyclerView mSearchRecycler;
-    private RecyclerView.Adapter mSearchAdapter;
-
-    private DataCache dataCache = DataCache.getInstance();
-
-    //________________________ onCreate and other Activity functions ____________________________________
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         if (getSupportActionBar() != null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        configureSearchBar();
+        configureSearchButton();
+        recycler = findViewById(R.id.list_search_recycler);
+        recycler.setLayoutManager(new LinearLayoutManager(this));
+    }
 
-        mSearchBar = findViewById(R.id.search_text);
-        mSearchBar.addTextChangedListener(new TextWatcher() {
+    public void configureSearchBar(){
+        EditText search = findViewById(R.id.search_text);
+        search.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after)
-            {}
-
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count)
-            {
-                searchInput = s.toString();
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                SearchActivity.this.search = s.toString();
             }
-
             @Override
-            public void afterTextChanged(Editable s)
-            {}
+            public void afterTextChanged(Editable s){}
         });
+    }
 
-        mSearchButton = findViewById(R.id.search_button);
-        mSearchButton.setOnClickListener(new View.OnClickListener() {
+    public void configureSearchButton(){
+        Button search = findViewById(R.id.search_button);
+        search.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                if (searchInput != null){
-                    updateUI();
+            public void onClick(View v) {
+                if (SearchActivity.this.search != null){
+                    changeView();
                 }
             }
         });
-
-        mSearchRecycler = findViewById(R.id.list_search_recycler);
-        mSearchRecycler.setLayoutManager(new LinearLayoutManager(this));
-
     }
 
-    //--****************-- Overriding the up Button --***************--
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
+    public boolean onOptionsItemSelected(MenuItem menu) {
+        if (menu.getItemId() == android.R.id.home) {
+            finish();
+            return true;
         }
-
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(menu);
     }
 
-    //--****************-- Initializing the Search Adapter --***************--
-    private void updateUI()
-    {
-        List<Object> objectList = new ArrayList<>();
-
-        Map<String, PersonModel> availablePeople = dataCache.getMyPeople();
-        getPersonsList(availablePeople, objectList);
-
-        Map<String, EventModel> availableEvents = dataCache.getShownEvents();
-        getEventsList(availableEvents, objectList);
-
-        if (objectList.size() != 0) {
-            mSearchAdapter = new SearchAdapter(objectList, this);
-            mSearchRecycler.setAdapter(mSearchAdapter);
+    private void changeView() {
+        List<Object> myList = new ArrayList<>();
+        Map<String, PersonModel> people = dataCache.getMyPeople();
+        for (PersonModel person: people.values()) {
+            if (person.getFirstName().toLowerCase().contains(search.toLowerCase())){
+                myList.add(person);
+            }
+            else if (person.getLastName().toLowerCase().contains(search.toLowerCase())){
+                myList.add(person);
+            }
         }
-    }
-
-    //--****************-- Get the Person List that contains the Search Input --***************--
-    private void getPersonsList(Map<String, PersonModel> allPeople, List<Object> objectList)
-    {
-        for (PersonModel person: allPeople.values()) {
-            if (person.getFirstName().toLowerCase().contains(searchInput.toLowerCase())){
-                objectList.add(person);
+        Map<String, EventModel> events = dataCache.getShownEvents();
+        for (EventModel event: events.values()) {
+            if (event.getEventType().toLowerCase().contains(search.toLowerCase())){
+                myList.add(event);
             }
-            else if (person.getLastName().toLowerCase().contains(searchInput.toLowerCase())){
-                objectList.add(person);
+            else if (event.getCountry().toLowerCase().contains(search.toLowerCase())){
+                myList.add(event);
             }
+            else if (event.getCity().toLowerCase().contains(search.toLowerCase())){
+                myList.add(event);
+            }
+        }
+        if (myList.size() != 0) {
+            RecyclerView.Adapter myAdapter = new SearchAdapter(myList, this);
+            recycler.setAdapter(myAdapter);
         }
     }
 
-    //--****************-- Get the Event List that contains the Search Input --***************--
-    private void getEventsList(Map<String, EventModel> availableEvents, List<Object> objectList)
-    {
-        for (EventModel event: availableEvents.values()) {
-            if (event.getEventType().toLowerCase().contains(searchInput.toLowerCase())){
-                objectList.add(event);
-            }
-            else if (event.getCountry().toLowerCase().contains(searchInput.toLowerCase())){
-                objectList.add(event);
-            }
-            else if (event.getCity().toLowerCase().contains(searchInput.toLowerCase())){
-                objectList.add(event);
-            }
-        }
-    }
 }
