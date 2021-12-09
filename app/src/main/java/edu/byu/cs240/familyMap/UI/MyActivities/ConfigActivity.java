@@ -47,21 +47,21 @@ public class ConfigActivity extends AppCompatActivity implements DataSetterTask.
         configureFamilySpinner();
         configureSpouseSpinner();
         configureMapSpinner();
-        TextView reSync = findViewById(R.id.resync_text);
-        reSync.setLinksClickable(true);
+//        TextView reSync = findViewById(R.id.resync_text);
+//        reSync.setLinksClickable(true);
         TextView logout = findViewById(R.id.logout_text);
         logout.setLinksClickable(true);
-        configureListeners(tree, linesForSpouse, reSync, logout);
+        configureListeners(tree, linesForSpouse, logout);
     }
 
-    public void configureListeners(@SuppressLint("UseSwitchCompatOrMaterialCode") Switch tree, @SuppressLint("UseSwitchCompatOrMaterialCode") Switch linesForSpouse, TextView reSync, TextView logout){
+    public void configureListeners(@SuppressLint("UseSwitchCompatOrMaterialCode") Switch tree, @SuppressLint("UseSwitchCompatOrMaterialCode") Switch linesForSpouse, TextView logout){
 
         linesForSpouse.setOnCheckedChangeListener((buttonView, isChecked) -> dataCache.getMySettings().setLineForSpouse(isChecked));
         tree.setOnCheckedChangeListener((buttonView, isChecked) -> dataCache.getMySettings().setLineForFamily(isChecked));
-        reSync.setOnClickListener(v -> {
-            settings = dataCache.getMySettings();
-            adjustApp();
-        });
+//        reSync.setOnClickListener(v -> {
+//            settings = dataCache.getMySettings();
+//            adjustApp();
+//        });
         life.setOnCheckedChangeListener((buttonView, isChecked) -> dataCache.getMySettings().setLineForStory(isChecked));
         logout.setOnClickListener(v -> {
             Intent myIntent = new Intent(getBaseContext(), MainActivity.class);

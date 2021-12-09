@@ -64,21 +64,15 @@ public class LoginHelperFragment extends Fragment implements MyLoginTask.taskLog
 
     public void setRadioButtons(View v){
         Button boy = v.findViewById(R.id.male);
-        boy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                regReq.setGender("m");
-                enabler();
-            }
+        boy.setOnClickListener(v1 -> {
+            regReq.setGender("m");
+            enabler();
         });
 
         Button girl = v.findViewById(R.id.female);
-        girl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                regReq.setGender("f");
-                enabler();
-            }
+        girl.setOnClickListener(v12 -> {
+            regReq.setGender("f");
+            enabler();
         });
     }
 
@@ -87,30 +81,24 @@ public class LoginHelperFragment extends Fragment implements MyLoginTask.taskLog
         registerButt = v.findViewById(R.id.myRegister);
         enabler();
 
-        loginButt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                logReq.setPassword(password.getText().toString());
-                logReq.setUsername(username.getText().toString());
-                MyLoginTask myLoginTask = new MyLoginTask(host.getText().toString(),
-                        ip.getText().toString(),
-                        LoginHelperFragment.this);
-                myLoginTask.execute(logReq);
-            }
+        loginButt.setOnClickListener(v1 -> {
+            logReq.setPassword(password.getText().toString());
+            logReq.setUsername(username.getText().toString());
+            MyLoginTask myLoginTask = new MyLoginTask(host.getText().toString(),
+                    ip.getText().toString(),
+                    LoginHelperFragment.this);
+            myLoginTask.execute(logReq);
         });
-        registerButt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                regReq.setLastName(lName.getText().toString());
-                regReq.setUsername(username.getText().toString());
-                regReq.setEmail(email.getText().toString());
-                regReq.setPassword(password.getText().toString());
-                regReq.setFirstName(fName.getText().toString());
-                MyRegisterTask regTask = new MyRegisterTask(host.getText().toString(),
-                        ip.getText().toString(),
-                        LoginHelperFragment.this);
-                regTask.execute(regReq);
-            }
+        registerButt.setOnClickListener(v12 -> {
+            regReq.setLastName(lName.getText().toString());
+            regReq.setUsername(username.getText().toString());
+            regReq.setEmail(email.getText().toString());
+            regReq.setPassword(password.getText().toString());
+            regReq.setFirstName(fName.getText().toString());
+            MyRegisterTask regTask = new MyRegisterTask(host.getText().toString(),
+                    ip.getText().toString(),
+                    LoginHelperFragment.this);
+            regTask.execute(regReq);
         });
     }
 
