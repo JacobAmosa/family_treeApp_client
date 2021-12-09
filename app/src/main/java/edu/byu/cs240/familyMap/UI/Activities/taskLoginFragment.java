@@ -18,7 +18,7 @@ import edu.byu.cs240.familyMap.R;
 import edu.byu.cs240.familyMap.UI.Tasks.LoginTask;
 import edu.byu.cs240.familyMap.UI.Tasks.RegisterTask;
 
-public class taskLoginFragment extends Fragment implements LoginTask.taskLogin, RegisterTask.RegisterContext {
+public class taskLoginFragment extends Fragment implements LoginTask.taskLogin, RegisterTask.taskRegister {
 
     private LoginFragmentListener loginFragmentListener;
     private final RegisterRequest regReq = new RegisterRequest();;
@@ -115,8 +115,8 @@ public class taskLoginFragment extends Fragment implements LoginTask.taskLogin, 
     }
 
     @Override
-    public void onExecuteComplete(String message) {
-        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    public void onExecuteComplete(String note) {
+        Toast.makeText(getContext(), note, Toast.LENGTH_SHORT).show();
         loginFragmentListener.logComplete();
     }
 

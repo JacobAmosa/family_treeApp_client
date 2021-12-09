@@ -6,56 +6,40 @@ import edu.byu.cs240.familyMap.Data.Request.RegisterRequest;
 import edu.byu.cs240.familyMap.Server.ServerProxy;
 import shared.*;
 
-/** RegisterTask
- * The RegisterTask extends AsyncTask and is used to check validity of a register Request,
- * and then pulls information from server using a DataTask
- */
 public class RegisterTask extends AsyncTask<RegisterRequest, RegisterLoginResult, RegisterLoginResult> implements DataTask.taskData {
+    private final taskRegister regCon;
+    private final String host;
+    private final String ip;
 
-    private String serverHost;
-    private String ipAddress;
-    private RegisterContext context;
-
-    ////////// Interface ///////////
-    public interface RegisterContext {
-        void onExecuteComplete(String message);
-    }
-
-    // ========================== Constructor ========================================
-    public RegisterTask(String server, String ip, RegisterContext c)
-    {
-        serverHost = server;
-        ipAddress = ip;
-        context = c;
-    }
-
-    //--****************-- Do In Background --***************--
     @Override
-    protected RegisterLoginResult doInBackground(RegisterRequest... registerRequests)
-    {
-        ServerProxy serverProxy = ServerProxy.getInstance();
-        RegisterLoginResult regResult = serverProxy.registerUser(serverHost, ipAddress, registerRequests[0]);
-        return regResult;
-    }
-
-    //--****************-- On Post Execute --***************--
-    @Override
-    protected void onPostExecute(RegisterLoginResult registerResult)
-    {
-        if (registerResult.isSuccess()){
-            DataTask dataTask = new DataTask(serverHost, ipAddress, this);
-            dataTask.execute(registerResult.getAuthToken());
-        }
-        else {
-            context.onExecuteComplete(registerResult.getMessage());
+    protected void onPostExecute(RegisterLoginResult result){
+        if (result.isSuccess()){
+            DataTask dataTask = new DataTask(host, ip, this);
+            dataTask.execute(result.getAuthToken());
+        }else {
+            regCon.onExecuteComplete(result.getMessage());
         }
     }
 
+    public RegisterTask(String server, String ip, taskRegister task){
+        this.host = server;
+        this.ip = ip;
+        this.regCon = task;
+    }
 
-    //--****************-- Completion from DataTask --***************--
+    @Override
+    protected RegisterLoginResult doInBackground(RegisterRequest... regReq){
+        ServerProxy proxy = ServerProxy.getInstance();
+        return proxy.registerUser(host, ip, regReq[0]);
+    }
+
     @Override
     public void onExecuteCompleteData(String note)
     {
-        context.onExecuteComplete(note);
+        regCon.onExecuteComplete(note);
+    }
+
+    public interface taskRegister {
+        void onExecuteComplete(String note);
     }
 }
