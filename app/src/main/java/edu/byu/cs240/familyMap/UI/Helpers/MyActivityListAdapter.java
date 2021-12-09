@@ -103,7 +103,7 @@ public class MyActivityListAdapter extends BaseExpandableListAdapter {
         if (convert == null) {
             LayoutInflater myInflate = (LayoutInflater) myContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convert = myInflate.inflate(R.layout.list_item_event, null);
+            convert = myInflate.inflate(R.layout.event_list, null);
         }
         lineOne = convert.findViewById(R.id.event_list_info);
         lineTwo = convert.findViewById(R.id.event_list_person);

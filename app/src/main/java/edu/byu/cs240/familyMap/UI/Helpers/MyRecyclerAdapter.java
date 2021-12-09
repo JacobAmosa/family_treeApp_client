@@ -38,7 +38,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<HoldHelper> {
     @NonNull
     @Override
     public HoldHelper onCreateViewHolder (@NonNull ViewGroup group, final int i) {
-        View view = layout.inflate(R.layout.list_item_filter, group, false);
+        View view = layout.inflate(R.layout.item_list, group, false);
         return new HoldHelper(view);
     }
 

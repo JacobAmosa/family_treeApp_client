@@ -46,7 +46,7 @@ public class FindHelper extends RecyclerView.Adapter<HoldFinder> {
     @NonNull
     @Override
     public HoldFinder onCreateViewHolder(@NonNull ViewGroup group, int num){
-        View myView = myInflate.inflate(R.layout.list_item_event, group, false);
+        View myView = myInflate.inflate(R.layout.event_list, group, false);
         return new HoldFinder(myView);
     }
 

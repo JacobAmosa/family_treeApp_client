@@ -3,8 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="8dp">
-
+    android:padding="9dp">
 
     <TextView
         android:id="@+id/event_header"

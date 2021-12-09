@@ -62,23 +62,18 @@
                 android:id="@+id/person_gender"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="14sp"/>
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="GENDER"/>
-
         </LinearLayout>
 
         <ExpandableListView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/expandable_list_person_activity">
-
         </ExpandableListView>
 
-
     </LinearLayout>
-
 
 </RelativeLayout>
