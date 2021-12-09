@@ -69,7 +69,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         @Override
         public void onClick(View v)
         {
-            textClicked();
+            clickedText();
         }
     };
 
@@ -103,9 +103,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void markerRetrieval(){
-        clearMap();
+        for (Marker currMarker: markerToEvent.keySet()) {
+            currMarker.remove();
+        }
         EventModel myMarks = markerToEvent.get(currentMarker);
-        putMarkers(googleMap);
+        onMapReady(googleMap);
         if (currentMarker == null) {
             if (!markerToEvent.containsValue(myMarks)) {
                 removeLines();
@@ -115,110 +117,76 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_item_filter) {
+            handleClicks("filter");
+            return true;
+        }else if(item.getItemId() == R.id.menu_item_search){
+            handleClicks("search");
+            return true;
+        }else if (item.getItemId() == R.id.menu_item_settings){
+            handleClicks("settings");
+            return true;
+        }else{
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void handleClicks(String button){
+        if (button.equals("filter")){
+            Intent intent = new Intent(getActivity(), FilterActivity.class);
+            startActivity(intent);
+        }else if (button.equals("search")){
+            Intent intent = new Intent(getActivity(), SearchActivity.class);
+            startActivity(intent);
+        }else if (button.equals("settings")){
+            Intent intent = new Intent(getActivity(), SettingActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menus, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId()) {
-            case R.id.menu_item_filter:
-                filterClicked();
-                return true;
-            case R.id.menu_item_search:
-                searchClicked();
-                return true;
-            case R.id.menu_item_settings:
-                settingsClicked();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    //--****************************-- Different onClick functions --*******************************--
-    private void filterClicked()
-    {
-        Intent intent = new Intent(getActivity(), FilterActivity.class);
-        startActivity(intent);
-    }
-
-    private void searchClicked()
-    {
-        Intent intent = new Intent(getActivity(), SearchActivity.class);
-        startActivity(intent);
-    }
-
-    private void settingsClicked()
-    {
-        Intent intent = new Intent(getActivity(), SettingActivity.class);
-        startActivity(intent);
-    }
-
-    private void textClicked()
-    {
+    private void clickedText() {
         Intent intent = new Intent(getActivity(), PersonActivity.class);
-        PersonModel person = data.getMyPeople().get(markerToEvent.get(currentMarker).getPersonID());
-        data.setClickedPerson(person);
+        PersonModel p = data.getMyPeople().get(markerToEvent.get(currentMarker).getPersonID());
+        data.setClickedPerson(p);
         startActivity(intent);
     }
 
-
-    //______________________________________ onMapReady and Other Map Functions _________________________________________________
     @Override
-    public void onMapReady(GoogleMap googleMap)
-    {
-        putMarkers(googleMap);
-    }
-
-    //--****************-- Puts/Refreshes the Map Markers --*****************--
-    private void putMarkers(GoogleMap googleMap) {
-        currentMarker = null;
-        markerToEvent = new HashMap<>();
-
-        Map<String, Colors> allMapColors = data.getColors();
+    public void onMapReady(GoogleMap myMap) {
+        Map<String, Colors> myColors = data.getColors();
         idToEvent = data.getShownEvents();
-
-        this.googleMap = googleMap;
+        markerToEvent = new HashMap<>();
+        currentMarker = null;
+        this.googleMap = myMap;
         this.googleMap.setMapType(DataCache.getInstance().getMySettings().getMapType());
-
-        ////////// Map Marker Click Listener ///////////
         this.googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
-            public boolean onMarkerClick(Marker marker)
-            {
+            public boolean onMarkerClick(Marker marker) {
                 markerClicked(marker);
                 return true;
             }
         });
-
-        for (EventModel currEvent : idToEvent.values()) {
-            LatLng currentPosition = new LatLng(currEvent.getLatitude(), currEvent.getLongitude());
-            Colors mapColor = allMapColors.get(currEvent.getEventType().toLowerCase());
-
-            Marker marker = this.googleMap.addMarker(new MarkerOptions().position(currentPosition)
-                    .icon(BitmapDescriptorFactory.defaultMarker(mapColor.getHue()))
-                    .title(currEvent.getEventType()));
-            markerToEvent.put(marker, currEvent);
-
-            if (data.getClickedEvent() == currEvent){  // For Event Fragment selection
+        for (EventModel e : idToEvent.values()) {
+            Colors theColor = myColors.get(e.getEventType().toLowerCase());
+            LatLng myPosition = new LatLng(e.getLatitude(), e.getLongitude());
+            Marker marker = this.googleMap.addMarker(new MarkerOptions().position(myPosition)
+                    .icon(BitmapDescriptorFactory.defaultMarker(theColor.getHue()))
+                    .title(e.getEventType()));
+            markerToEvent.put(marker, e);
+            if (data.getClickedEvent() == e){
                 currentMarker = marker;
             }
         }
-
-        if (currentMarker != null && imAnEvent){  // Event Fragment camera focus
+        if (imAnEvent && currentMarker != null){
             this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentMarker.getPosition()));
             markerClicked(currentMarker);
-        }
-    }
-
-    //--****************-- Clears All Markers from Map --*****************--
-    private void clearMap()
-    {
-        for (Marker currMarker: markerToEvent.keySet()) {
-            currMarker.remove();
         }
     }
 
