@@ -20,15 +20,15 @@
         android:theme="@style/Theme.FamilyMap"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".UI.Activities.SettingActivity"
+            android:name=".UI.Activities.ConfigActivity"
 
             android:parentActivityName=".UI.Activities.MainActivity"/>
         <activity
-            android:name=".UI.Activities.SearchActivity"
+            android:name=".UI.Activities.FindActivity"
 
             android:parentActivityName=".UI.Activities.MainActivity"/>
         <activity
-            android:name=".UI.Activities.FilterActivity"
+            android:name=".UI.Activities.HelperActivity"
 
             android:parentActivityName=".UI.Activities.MainActivity"/>
         <activity

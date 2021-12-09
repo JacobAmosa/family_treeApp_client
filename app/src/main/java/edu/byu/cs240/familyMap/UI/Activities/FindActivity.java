@@ -23,7 +23,7 @@ import edu.byu.cs240.familyMap.UI.Lists.SearchAdapter;
 import shared.EventModel;
 import shared.PersonModel;
 
-public class SearchActivity extends AppCompatActivity {
+public class FindActivity extends AppCompatActivity {
     private final DataCache dataCache = DataCache.getInstance();
     private String search;
     private RecyclerView recycler;
@@ -48,7 +48,7 @@ public class SearchActivity extends AppCompatActivity {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                SearchActivity.this.search = s.toString();
+                FindActivity.this.search = s.toString();
             }
             @Override
             public void afterTextChanged(Editable s){}
@@ -60,7 +60,7 @@ public class SearchActivity extends AppCompatActivity {
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (SearchActivity.this.search != null){
+                if (FindActivity.this.search != null){
                     changeView();
                 }
             }

@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import edu.byu.cs240.familyMap.R;
 
-public class MainActivity extends AppCompatActivity implements taskLoginFragment.LoginFragmentListener {
+public class MainActivity extends AppCompatActivity implements LoginHelperFragment.LoginFragmentListener {
 
     private final FragmentManager fm = getSupportFragmentManager();
 
@@ -26,8 +26,8 @@ public class MainActivity extends AppCompatActivity implements taskLoginFragment
     }
 
     public void startLogin(Fragment fragment){
-        fragment = new taskLoginFragment();
-        ((taskLoginFragment) fragment).setLoginListener(this);
+        fragment = new LoginHelperFragment();
+        ((LoginHelperFragment) fragment).setLoginListener(this);
         fm.beginTransaction().add(R.id.fragment_container, fragment).commit();
     }
 

@@ -19,10 +19,10 @@ import com.google.android.gms.maps.GoogleMap;
 import edu.byu.cs240.familyMap.Data.DataCache;
 import edu.byu.cs240.familyMap.Data.MySettings;
 import edu.byu.cs240.familyMap.R;
-import edu.byu.cs240.familyMap.UI.Tasks.DataTask;
+import edu.byu.cs240.familyMap.UI.Tasks.DataSetterTask;
 
 
-public class SettingActivity extends AppCompatActivity implements DataTask.taskData {
+public class ConfigActivity extends AppCompatActivity implements DataSetterTask.taskData {
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private final DataCache dataCache = DataCache.getInstance();
@@ -218,8 +218,8 @@ public class SettingActivity extends AppCompatActivity implements DataTask.taskD
     }
 
     private void adjustApp() {
-        DataTask dataTask = new DataTask(dataCache.getHost(), dataCache.getIp(), this);
-        dataTask.execute(dataCache.getAuthToken());
+        DataSetterTask dataSetterTask = new DataSetterTask(dataCache.getHost(), dataCache.getIp(), this);
+        dataSetterTask.execute(dataCache.getAuthToken());
     }
 
     @Override

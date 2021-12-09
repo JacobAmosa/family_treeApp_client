@@ -15,7 +15,7 @@ import edu.byu.cs240.familyMap.Data.DataCache;
 import edu.byu.cs240.familyMap.R;
 import edu.byu.cs240.familyMap.UI.Lists.FilterRecycleAdapter;
 
-public class FilterActivity extends AppCompatActivity {
+public class HelperActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private final DataCache dataCache = DataCache.getInstance();

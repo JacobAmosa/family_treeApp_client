@@ -6,7 +6,7 @@ import edu.byu.cs240.familyMap.Data.Request.RegisterRequest;
 import edu.byu.cs240.familyMap.Server.ServerProxy;
 import shared.*;
 
-public class RegisterTask extends AsyncTask<RegisterRequest, RegisterLoginResult, RegisterLoginResult> implements DataTask.taskData {
+public class MyRegisterTask extends AsyncTask<RegisterRequest, RegisterLoginResult, RegisterLoginResult> implements DataSetterTask.taskData {
     private final taskRegister regCon;
     private final String host;
     private final String ip;
@@ -14,14 +14,14 @@ public class RegisterTask extends AsyncTask<RegisterRequest, RegisterLoginResult
     @Override
     protected void onPostExecute(RegisterLoginResult result){
         if (result.isSuccess()){
-            DataTask dataTask = new DataTask(host, ip, this);
-            dataTask.execute(result.getAuthToken());
+            DataSetterTask dataSetterTask = new DataSetterTask(host, ip, this);
+            dataSetterTask.execute(result.getAuthToken());
         }else {
             regCon.onExecuteComplete(result.getMessage());
         }
     }
 
-    public RegisterTask(String server, String ip, taskRegister task){
+    public MyRegisterTask(String server, String ip, taskRegister task){
         this.host = server;
         this.ip = ip;
         this.regCon = task;

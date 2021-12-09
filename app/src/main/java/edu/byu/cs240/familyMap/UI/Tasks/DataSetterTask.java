@@ -13,13 +13,13 @@ import shared.EventResult;
 import shared.PersonModel;
 import shared.PersonResult;
 
-public class DataTask extends AsyncTask<String, Boolean, Boolean> {
+public class DataSetterTask extends AsyncTask<String, Boolean, Boolean> {
     private final DataCache dataCache = DataCache.getInstance();
     private final String host;
     private final String ip;
     private final taskData dataCon;
 
-    public DataTask(String server, String ip, taskData data){
+    public DataSetterTask(String server, String ip, taskData data){
         this.ip = ip;
         this.dataCon = data;
         this.host = server;

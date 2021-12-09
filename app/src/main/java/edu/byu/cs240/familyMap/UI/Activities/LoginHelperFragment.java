@@ -15,10 +15,10 @@ import androidx.fragment.app.Fragment;
 import edu.byu.cs240.familyMap.Data.Request.LoginRequest;
 import edu.byu.cs240.familyMap.Data.Request.RegisterRequest;
 import edu.byu.cs240.familyMap.R;
-import edu.byu.cs240.familyMap.UI.Tasks.LoginTask;
-import edu.byu.cs240.familyMap.UI.Tasks.RegisterTask;
+import edu.byu.cs240.familyMap.UI.Tasks.MyLoginTask;
+import edu.byu.cs240.familyMap.UI.Tasks.MyRegisterTask;
 
-public class taskLoginFragment extends Fragment implements LoginTask.taskLogin, RegisterTask.taskRegister {
+public class LoginHelperFragment extends Fragment implements MyLoginTask.taskLogin, MyRegisterTask.taskRegister {
 
     private LoginFragmentListener loginFragmentListener;
     private final RegisterRequest regReq = new RegisterRequest();;
@@ -92,10 +92,10 @@ public class taskLoginFragment extends Fragment implements LoginTask.taskLogin, 
             public void onClick(View v) {
                 logReq.setPassword(password.getText().toString());
                 logReq.setUsername(username.getText().toString());
-                LoginTask loginTask = new LoginTask(host.getText().toString(),
+                MyLoginTask myLoginTask = new MyLoginTask(host.getText().toString(),
                         ip.getText().toString(),
-                        taskLoginFragment.this);
-                loginTask.execute(logReq);
+                        LoginHelperFragment.this);
+                myLoginTask.execute(logReq);
             }
         });
         registerButt.setOnClickListener(new View.OnClickListener() {
@@ -106,9 +106,9 @@ public class taskLoginFragment extends Fragment implements LoginTask.taskLogin, 
                 regReq.setEmail(email.getText().toString());
                 regReq.setPassword(password.getText().toString());
                 regReq.setFirstName(fName.getText().toString());
-                RegisterTask regTask = new RegisterTask(host.getText().toString(),
+                MyRegisterTask regTask = new MyRegisterTask(host.getText().toString(),
                         ip.getText().toString(),
-                        taskLoginFragment.this);
+                        LoginHelperFragment.this);
                 regTask.execute(regReq);
             }
         });

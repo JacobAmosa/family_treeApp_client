@@ -138,13 +138,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     public void handleClicks(String button){
         if (button.equals("filter")){
-            Intent intent = new Intent(getActivity(), FilterActivity.class);
+            Intent intent = new Intent(getActivity(), HelperActivity.class);
             startActivity(intent);
         }else if (button.equals("search")){
-            Intent intent = new Intent(getActivity(), SearchActivity.class);
+            Intent intent = new Intent(getActivity(), FindActivity.class);
             startActivity(intent);
         }else if (button.equals("settings")){
-            Intent intent = new Intent(getActivity(), SettingActivity.class);
+            Intent intent = new Intent(getActivity(), ConfigActivity.class);
             startActivity(intent);
         }
     }
