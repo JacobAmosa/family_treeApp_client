@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -17,79 +18,55 @@ import edu.byu.cs240.familyMap.UI.Activities.PersonActivity;
 import shared.EventModel;
 import shared.PersonModel;
 
-/** SearchAdapter
- * Contains all information about the Search Adapter for the Search Recycler View
- */
 public class SearchAdapter extends RecyclerView.Adapter<SearchHolder> {
+    private final LayoutInflater myInflate;
+    private final List<Object> objectList;
+    private final Context myContext;
 
-    private List<Object> mObjects;
-    private Context context;
-    private LayoutInflater inflater;
-
-    // ========================== Constructor ========================================
-    public SearchAdapter(List<Object> objects, Context context)
-    {
-        this.context = context;
-        this.mObjects = objects;
-        inflater = LayoutInflater.from(context);
+    public SearchAdapter(List<Object> obj, Context myContext) {
+        this.myContext = myContext;
+        this.objectList = obj;
+        myInflate = LayoutInflater.from(myContext);
     }
 
-    //--****************-- Creates the View Holder --***************--
-    @Override
-    public SearchHolder onCreateViewHolder(ViewGroup parent, int viewType)
-    {
-        View view = inflater.inflate(R.layout.list_item_event, parent, false);
-        return new SearchHolder(view);
+
+    private void handlePerson(PersonModel myPerson){
+        DataCache.getInstance().setClickedPerson(myPerson);
+        Intent myIntent = new Intent(myContext, PersonActivity.class);
+        myContext.startActivity(myIntent);
     }
 
-    //--****************-- Binds the View Holder to a SearchHolder --***************--
+    private void handleEvent(EventModel myEvent){
+        DataCache.getInstance().setClickedEvent(myEvent);
+        Intent myIntent = new Intent(myContext, EventActivity.class);
+        myIntent.putExtra("Event", "Event");
+        myContext.startActivity(myIntent);
+    }
+
+    @NonNull
     @Override
-    public void onBindViewHolder(SearchHolder holder, int position)
-    {
-        final Object currObject = mObjects.get(position);
-        if (currObject instanceof PersonModel){
-            holder.getLinearLayout().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v)
-                {
-                    personsClicked((PersonModel) currObject);
-                }
-            });
-            holder.bindPerson(currObject);
-        }
-        else{
-            holder.getLinearLayout().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v)
-                {
-                    eventClicked((EventModel) currObject);
-                }
-            });
-            holder.bindEvent(currObject);
+    public SearchHolder onCreateViewHolder(@NonNull ViewGroup group, int num){
+        View myView = myInflate.inflate(R.layout.list_item_event, group, false);
+        return new SearchHolder(myView);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull SearchHolder holder, int num) {
+        final Object myObj = objectList.get(num);
+        if (myObj instanceof PersonModel) {
+            holder.getLinearLayout().setOnClickListener(v -> handlePerson((PersonModel) myObj));
+            holder.configurePerson(myObj);
+        } else {
+            holder.getLinearLayout().setOnClickListener(v -> handleEvent((EventModel) myObj));
+            holder.configureEvent(myObj);
         }
     }
 
-    //--****************-- Gets size of items --***************--
     @Override
     public int getItemCount()
     {
-        return mObjects.size();
+        return objectList.size();
     }
 
-    //--****************-- Switch to Event Activity --***************--
-    private void eventClicked(EventModel event)
-    {
-        Intent intent = new Intent(context, EventActivity.class);
-        intent.putExtra("Event", "Event");
-        DataCache.getInstance().setClickedEvent(event);
-        context.startActivity(intent);
-    }
 
-    //--****************-- Switch to Person Activity --***************--
-    private void personsClicked(PersonModel person)
-    {
-        Intent intent = new Intent(context, PersonActivity.class);
-        DataCache.getInstance().setClickedPerson(person);
-        context.startActivity(intent);
-    }
 }

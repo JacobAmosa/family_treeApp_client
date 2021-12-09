@@ -1,5 +1,6 @@
 package edu.byu.cs240.familyMap.UI.Lists;
 
+import android.annotation.SuppressLint;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -12,63 +13,55 @@ import edu.byu.cs240.familyMap.R;
 import shared.EventModel;
 import shared.PersonModel;
 
-/** SearchHolder
- * This contains all layout information used by the SearchAdapter in the Search Activity
- */
 public class SearchHolder extends RecyclerView.ViewHolder {
+    private View myView;
+    private TextView description;
+    private ImageView icon;
+    private LinearLayout linearLayout;
+    private TextView lineOne;
 
-    private View convertView;
-
-    private LinearLayout mLinearLayout;
-    private TextView mFirstLine;
-    private TextView mDescription;
-    private ImageView mIcon;
-
-    // ========================== Constructor ========================================
-    public SearchHolder(View itemView)
-    {
-        super(itemView);
-        mFirstLine = itemView.findViewById(R.id.event_list_info);
-        mDescription = itemView.findViewById(R.id.event_list_person);
-        mIcon = itemView.findViewById(R.id.list_item_icon);
-        mLinearLayout = itemView.findViewById(R.id.linear_layout_click_area);
-        mLinearLayout.setClickable(true);
-        convertView = itemView;
+    public SearchHolder(View myItem){
+        super(myItem);
+        configureItems(myItem);
     }
 
     public LinearLayout getLinearLayout()
     {
-        return mLinearLayout;
+        return linearLayout;
     }
 
-    //--****************-- Bind the Event Holders --***************--
-    public void bindEvent(Object currObject) {
-
-        final EventModel event = (EventModel) currObject;
-        String eventInfo = event.getEventType() + ", " + event.getCity() + ", "
-                + event.getCountry() + " " + event.getYear();
-        mFirstLine.setText(eventInfo);
-
-        DataCache dataCache = DataCache.getInstance();
-        PersonModel currPerson = dataCache.getMyPeople().get(event.getPersonID());
-        String personInfo = currPerson.getFirstName() + " " + currPerson.getLastName();
-        mDescription.setText(personInfo);
-        mIcon.setImageDrawable(convertView.getResources().getDrawable(R.drawable.map_pointer_icon));
-
+    public void configureItems(View myItem){
+        linearLayout = myItem.findViewById(R.id.linear_layout_click_area);
+        linearLayout.setClickable(true);
+        lineOne = myItem.findViewById(R.id.event_list_info);
+        icon = myItem.findViewById(R.id.list_item_icon);
+        description = myItem.findViewById(R.id.event_list_person);
+        myView = myItem;
     }
 
-    //--****************-- Bind the Person Holders --***************--
-    public void bindPerson(Object currObject)
-    {
-        PersonModel currPerson = (PersonModel) currObject;
-        String personInfo = currPerson.getFirstName() + " " + currPerson.getLastName();
-        mFirstLine.setText(personInfo);
-        mDescription.setVisibility(View.INVISIBLE);
-        if (currPerson.getGender().toLowerCase().equals("m")) {
-            mIcon.setImageDrawable(convertView.getResources().getDrawable(R.drawable.boy_logo));
+    @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
+    public void configurePerson(Object myObj){
+        PersonModel myPerson = (PersonModel) myObj;
+        lineOne.setText(myPerson.getFirstName() + " " + myPerson.getLastName());
+        description.setVisibility(View.INVISIBLE);
+        if (myPerson.getGender().equalsIgnoreCase("m")) {
+            icon.setImageDrawable(myView.getResources().getDrawable(R.drawable.boy_logo));
         } else {
-            mIcon.setImageDrawable(convertView.getResources().getDrawable(R.drawable.girl_logo));
+            icon.setImageDrawable(myView.getResources().getDrawable(R.drawable.girl_logo));
         }
     }
+
+    @SuppressLint({"UseCompatLoadingForDrawables", "SetTextI18n"})
+    public void configureEvent(Object myObj) {
+        DataCache dataCache = DataCache.getInstance();
+        final EventModel myEvent = (EventModel) myObj;
+        lineOne.setText(myEvent.getEventType() + ", " + myEvent.getCity() + ", " + myEvent.getCountry() + " " + myEvent.getYear());
+        PersonModel currPerson = dataCache.getMyPeople().get(myEvent.getPersonID());
+        assert currPerson != null;
+        description.setText(currPerson.getFirstName() + " " + currPerson.getLastName());
+        icon.setImageDrawable(myView.getResources().getDrawable(R.drawable.map_pointer_icon));
+    }
+
+
 
 }
