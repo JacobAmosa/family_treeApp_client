@@ -87,4 +87,11 @@ public class MyFilter {
         this.maternal = maternal;
     }
 
+    public List<String> getEvents() {
+        return events;
+    }
+
+    public List<String> getDisplayed() {
+        return displayed;
+    }
 }

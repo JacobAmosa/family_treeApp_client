@@ -25,6 +25,26 @@ public class DataCache {
     private String authToken;
     private static DataCache data;
 
+    public Map<String, EventModel> getMyEvents() {
+        return myEvents;
+    }
+
+    public Set<String> getDadFam() {
+        return dadFam;
+    }
+
+    public Set<String> getMomFam() {
+        return momFam;
+    }
+
+    public PersonModel getCurrentUser() {
+        return currentUser;
+    }
+
+    public static DataCache getData() {
+        return data;
+    }
+
     public static DataCache getInstance() {
         if (data != null) {
             return data;
